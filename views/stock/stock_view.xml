@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+    
+    	<record id="view_stock_picking_out_connector_form" model="ir.ui.view">
+      		<field name="name">stock.picking.form</field>
+      		<field name="model">stock.picking</field>
+      		<field name="inherit_id" ref="stock.view_picking_form"/>
+      		<field name="arch" type="xml">
+      			<field name="origin" position="after">
+      				<field name="is_magento_picking" invisible="1"/>
+      				<field name="magento_order_status" attrs="{'invisible':[('is_magento_picking','=',False)]}"/>
+      			</field> 
+      			<button name="action_confirm" position="after">
+      				<button name="get_magento_order_status" type="object" string="Get Magento Order Status" attrs="{'invisible':[('is_magento_picking','=',False)]}"/>
+      			</button>
+      			<xpath expr="//notebook[last()]" position="inside" attrs="{'invisible' : [('is_magento_picking','=',False)]}">
+      			<page name="magento_info" string="Magento Info" groups="base.group_no_one">
+      			<group>
+      				<field name="backend_id"/>
+      				<field name="magento_id"/>
+      			</group>
+      			</page>
+      			</xpath>
+            </field>
+    	</record>
+		
+		<record id="magento_view_stock_picking_tree" model="ir.ui.view">
+			<field name="name">magento.view.stock.picking.tree</field>
+			<field name="model">stock.picking</field>
+			<field name="priority" eval="50"/>
+			<field name="arch" type="xml">
+				<tree colors="blue:state == 'draft';grey:state == 'cancel';red:state not in ('cancel', 'done') and min_date &lt; current_date" string="Picking list" create="false">
+                    <field name="name"/>
+                    <field name="location_dest_id"/>
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <field name="origin"/>
+                    <field name="group_id" invisible="1"/>
+                    <field name="backorder_id"/>
+                    <field name="storeview_id"/>
+                    <field name="state"/>
+                    <field name="priority" invisible="1"/>
+                    <field name="picking_type_id" invisible="1"/>
+                </tree>
+			</field>
+		</record>
+		
+		<record id="magento_view_stock_picking_filter_ept" model="ir.ui.view">
+            <field name="name">stock.picking.filter.view.ept</field>
+            <field name="model">stock.picking</field>
+            <field name="arch" type="xml">
+               <search string="Picking Lists">
+                    <field name="name" string="Picking List" filter_domain="['|',('name','ilike', self),('origin','ilike',self)]"/>
+                    <filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Moves"/>
+                    <filter icon="terp-check" name="available" string="Ready" domain="[('state','in',('assigned', 'partially_available'))]" help="Assigned Moves"/>
+                    <filter icon="terp-check" name="waiting" string="Waiting Availability" domain="[('state','=', 'confirmed')]" help="Waiting Moves"/>
+                    <filter icon="terp-camera_test" name="confirmed" string="Confirmed" domain="[('state','in', ('confirmed', 'waiting', 'assigned'))]" help="Confirmed Moves"/>
+                    <filter icon="terp-dialog-close" name="done" string="Done" domain="[('state','=','done')]" help="Pickings already processed"/>
+                    <separator/>
+                    <filter name="late" string="Late" domain="[('min_date','&lt;', time.strftime('%Y-%m-%d %H:%M:%S'))]" help="Pickings that are late on scheduled time"/>
+                    <separator/>
+                    <filter name="backorder" string="Backorders" domain="[('backorder_id','&lt;&gt;', False)]" help="Remaining parts of picking partially processed"/>
+                    <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
+                    <field name="product_id"/>
+                    <field name="picking_type_id"/>
+                    <field name="group_id"/>
+                    <field name="website_id"/>
+                    <field name="store_id"/>
+                    <field name="storeview_id"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Order Date" icon="terp-go-month" domain="[]" context="{'group_by':'date'}"/>
+                        <filter string="Expected Date" icon="terp-go-month" domain="[]" context="{'group_by':'min_date'}"/>
+                        <filter string="Origin" domain="[]" context="{'group_by':'origin'}"/>
+                        <filter string="Picking Type" domain="[]" context="{'group_by':'picking_type_id'}"/>
+                        <filter string="Procurement Group" domain="[]" context="{'group_by':'group_id'}"/>
+                        <filter string="Website" context="{'group_by':'website_id'}"/>
+                        <filter string="Store" context="{'group_by':'store_id'}"/>
+                        <filter string="Storeview" context="{'group_by':'storeview_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+		<!-- dashboard -->
+		<record id="action_magento_stock_picking_tree_ept" model="ir.actions.act_window">
+            <field name="name">Delivery Orders</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_id" ref="magento_view_stock_picking_tree"/>
+            <field name="search_view_id" ref="magento_view_stock_picking_filter_ept"/>
+            <field name="domain">[('is_magento_picking','=','True')]</field>
+            <field name="help" type="html">
+              <div>
+					<br />
+					<br />
+					<br />
+					<p>
+						<b>There is no any Delivery Order created for any of Magento Sale Orders.</b>
+						<br/>
+						<br/>
+						Delivery order for Magento will be created automatically
+						and it will be visible over here.<br/>
+						From here, you can't manually create delivery order for Magento. It
+						must be created via Sale Order.
+					</p>
+
+				</div>
+            </field>
+        </record>
+			
+		
+
+        <record id="magento_action_picking_view_confirm_ept" model="ir.actions.act_window">
+            <field name="name">Delivery Orders</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_magento_picking','=','True'),('state','=','confirmed')]</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+        <record id="magento_action_picking_view_partially_available_ept" model="ir.actions.act_window">
+            <field name="name">Delivery Orders</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_magento_picking','=','True'),('state','=','partially_available')]</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+        <record id="magento_action_picking_view_assigned_ept" model="ir.actions.act_window">
+            <field name="name">Delivery Orders</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_magento_picking','=','True'),('state','=','assigned')]</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+        <record id="magento_action_picking_view_done_ept" model="ir.actions.act_window">
+            <field name="name">Delivery Orders</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_magento_picking','=','True'),('state','=','done')]</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+
+        <record id="magento_action_picking_tree_late_ept" model="ir.actions.act_window">
+            <field name="name">Late Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="domain">[('is_magento_picking','=',True)]</field>
+            <field name="context">{
+                    'contact_display': 'partner_address',
+                    'search_default_late': 1,
+                    'search_default_confirmed': 1,
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+        <record id="magento_action_picking_tree_backorder_ept" model="ir.actions.act_window">
+            <field name="name">Backorders</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="domain">[('is_magento_picking','=',True)]</field>
+            <field name="context">{
+                    'contact_display': 'partner_address',
+                    'search_default_backorder': 1,
+                    'search_default_confirmed': 1,
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>	
+        
+        <menuitem id="menu_transfer_details_parent" name="Transfer Details"
+        		sequence="6" parent="menu_connector_root"></menuitem>	
+        
+        <menuitem id="menu_magento_delivery_order_ept" name="Shipments"
+			parent="menu_transfer_details_parent" sequence="1"
+			action="action_magento_stock_picking_tree_ept" />	
+		
+    </data>
+</odoo>

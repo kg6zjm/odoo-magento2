@@ -1,0 +1,67 @@
+@charset "UTF-8";
+.odoo .oe_view_nocontent .oe_empty_magento_instance {
+  background: transparent url(/magento_ept/static/src/img/amazon.jpg) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.odoo .oe_view_nocontent .oe_empty_magento_sale_order {
+  background: transparent url(/magento_ept/static/src/img/cart.png) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.odoo .oe_view_nocontent .oe_empty_magento_products {
+  background: transparent url(/magento_ept/static/src/img/product.jpg) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.odoo .oe_view_nocontent .oe_empty_magento_refund {
+  background: transparent url(/magento_ept/static/src/img/refund.png) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.odoo .oe_view_nocontent .oe_empty_magento_picking {
+  background: transparent url(/magento_ept/static/src/img/picking.png) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.odoo .oe_view_nocontent .oe_empty_magento_invoice {
+  background: transparent url(/magento_ept/static/src/img/invoice.jpg) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+.odoo .oe_kanban_view .oe_kanban_magento_operations_type {
+    width: 345px;
+    cursor: default;
+    min-height: 245px !important;
+}
+.odoo .oe_kanban_view .oe_kanban_image_emipro {
+  display: block;
+  vertical-align: middle;
+  width: 150px;
+  height: 150px;
+  margin : 0px auto;
+
+}
+.odoo .oe_ept_center {
+	padding-top:15px;
+	display : block;
+	width : 100%;
+	margin : 0px auto;
+}

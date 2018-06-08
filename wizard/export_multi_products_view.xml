@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+	        <record id="view_export_multi_products" model="ir.ui.view">
+            <field name="name">Prepare for Export</field>
+            <field name="model">export.multi.products</field>
+            <field name="arch" type="xml">
+                <form string="Prepare for Export">
+                	<group>
+                		<group>
+                			<field name="backend_id" options="{'no_create':True,'no_create_edit': True}"/>
+                			<field name="website_m2m_ids" required="1" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True}"/>
+                			<field name="magento_attribute_set_id" required="1" options="{'no_create':True,'no_create_edit': True}"/>
+                		</group>
+                		                		
+                	</group>
+                    <group string="The selected products will be exported." invisible="context.get('process','') not in ['prepare_configurable_product_for_export']">
+                     <p class="oe_grey">
+										<strong>
+											Warning
+										</strong>
+										: All the selected product with all the child product will be exported. If you want to export
+										only selected child then you can export it from Prodcut Variant.
+					                    
+					</p>
+					</group>
+					<group invisible="context.get('process','') not in ['prepare_configurable_product_for_export']">
+                        <field name="product_tmpl_ids" nolabel="1"/>
+                    </group>
+                    
+                    <group invisible="context.get('process','') not in ['prepare_simple_product_for_export']">
+                        <field name="product_product_ids" nolabel="1"/>
+                    </group>
+                   	
+                    <footer>
+                    	<button name="export" string="Export" type="object" class="oe_highlight"/>						
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!-- Action for export configurable product -->
+        <act_window id="action_export_multiple_products" 
+        	name="Prepare for Export to Magento"
+        	src_model='product.template'
+        	res_model='export.multi.products'
+        	view_type="form" 
+        	view_mode="form"
+            key2="client_action_multi"
+            target="new"
+            context="{'process':'prepare_configurable_product_for_export'}"/>
+            
+        <!-- Action for export simple product -->
+       	<act_window id="action_export_multiple_products_products" 
+        	name="Prepare for Export to Magento"
+        	src_model='product.product'
+        	res_model='export.multi.products'
+        	view_type="form" 
+        	view_mode="form"
+            key2="client_action_multi"
+            target="new"
+            context="{'process':'prepare_simple_product_for_export'}"/>
+
+	</data>
+</odoo>

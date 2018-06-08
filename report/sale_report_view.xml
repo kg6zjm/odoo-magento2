@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+	<record id="view_magento_sale_report_pivot_ept" model="ir.ui.view">
+         <field name="name">magento.sale.report.pivot</field>
+         <field name="model">magento.sale.report</field>
+         <field name="arch" type="xml">
+             <pivot string="Sales Analysis" disable_linking="True">
+                 <field name="website_id" type="row"/>
+                 <field name="date" interval="month" type="col"/>
+                 <field name="price_total" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+    
+    <record id="view_magento_sale_order_product_graph" model="ir.ui.view">
+         <field name="name">magento.order.report.graph</field>
+         <field name="model">magento.sale.report</field>
+         <field name="arch" type="xml">
+             <graph string="Sales Analysis" type="pivot" stacked="True">
+                 <field name="website_id" type="row"/>
+                 <field name="date" interval="month" type="col"/>
+                 <field name="price_total" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <!-- Custom reports (aka filters) -->
+    <record id="filter_magento_sale_report_sales_funnel_ept" model="ir.filters">
+        <field name="name">Sales Funnel</field>
+        <field name="model_id">magento.sale.report</field>
+        <field name="domain">['&amp;', ('date','&lt;=', time.strftime('%%Y-12-31')), '&amp;', ('date','&gt;=',time.strftime('%%Y-01-01')), '|', ('state','in',('draft','sent')), ('state','not in',('draft','sent','cancel'))]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['state'], 'measures': ['price_total']}</field>
+    </record>
+    <record id="filter_magento_sale_report_salespersons_ept" model="ir.filters">
+        <field name="name">By Salespersons</field>
+        <field name="model_id">magento.sale.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'user_id']}</field>
+    </record>
+    <record id="filter_magento_sale_report_salesteam" model="ir.filters">
+        <field name="name">By Salesteam</field>
+        <field name="model_id">magento.sale.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'team_id']}</field>
+    </record>
+    <record id="filter_magento_isale_report_product_ept" model="ir.filters">
+        <field name="name">By Product</field>
+        <field name="model_id">magento.sale.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'product_id']}</field>
+    </record>
+
+    <record id="view_magento_order_product_search" model="ir.ui.view">
+        <field name="name">magento.sale.report.search</field>
+        <field name="model">magento.sale.report</field>
+        <field name="arch" type="xml">
+            <search string="Sales Analysis">
+                <field name="date"/>
+                <filter string="This Year" name="year" invisible="1" domain="[('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]"/>
+                <filter name="Quotations" domain="[('state','in',('draft','sent'))]"/>
+                <filter name="Sales" string="Sales" domain="[('state','not in',('draft','sent','cancel'))]"/>
+                <separator/>
+                <filter string="My Sales" help="My Sales" domain="[('user_id','=',uid)]"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="user_id"/>
+                <group expand="0" string="Extended Filters">
+                    <field name="categ_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <group expand="1" string="Group By">
+                    <filter string="Salesperson" name="User" context="{'group_by':'user_id'}"/>
+                    <filter string="Sales Team" context="{'group_by':'team_id'}" groups="base.group_multi_salesteams"/>
+                    <filter string="Customer" name="Customer" context="{'group_by':'partner_id'}"/>
+                    <filter string="Category of Product" name="Category" context="{'group_by':'categ_id'}"/>
+                    <filter string="Instance" name="Instance" context="{'group_by':'instance_id'}" />
+                    <filter string="Status" context="{'group_by':'state'}"/>
+                    <filter string="Company" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+                    <filter string="Website" name="website" context="{'group_by':'website_id'}" />
+                    <filter string="Store" name="store" context="{'group_by':'store_id'}" />
+                    <separator/>
+                    <filter string="Order Month" context="{'group_by':'date:month'}" help="Ordered date of the sales order"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_magento_order_report_all" model="ir.actions.act_window">
+        <field name="name">Sales Analysis</field>
+        <field name="res_model">magento.sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="view_magento_order_product_search"/>
+        <field name="view_id" ref="view_magento_sale_report_pivot_ept"></field>
+        <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    
+    <record id="action_magento_order_report_dashboard" model="ir.actions.act_window">
+        <field name="name">Sales Analysis</field>
+        <field name="res_model">magento.sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_magento_sale_order_product_graph"/>
+        <field name="context">{ 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    
+    <record id="action_magento_order_report_dashboard_last_month" model="ir.actions.act_window">
+        <field name="name">Last Month Sales</field>
+        <field name="res_model">magento.sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_magento_sale_order_product_graph"/>
+        <field name="domain">[('date','&lt;=',(context_today() - relativedelta(day=31, months=1)).strftime('%Y-%m-%d')),('date','&gt;=',(context_today()- relativedelta(day=1,months=1)).strftime('%Y-%m-%d'))]</field>
+        <field name="context">{ 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    
+    <record id="action_magento_order_report_dashboard_last_year" model="ir.actions.act_window">
+        <field name="name">Last Year Sales</field>
+        <field name="res_model">magento.sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_magento_sale_order_product_graph"/>
+        <field name="domain">[('date','&lt;=',(context_today() - relativedelta(day=31, month=12,years=1)).strftime('%Y-%m-%d')),('date','&gt;=',(context_today()- relativedelta(day=1,month=1,years=1)).strftime('%Y-%m-%d'))]</field>     
+        <field name="context">{ 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    
+    <record id="action_magento_order_report_dashboard_last_week" model="ir.actions.act_window">
+        <field name="name">Last Week Sales</field>
+        <field name="res_model">magento.sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_magento_sale_order_product_graph"/>
+        <field name="domain"> [('date','&lt;=', time.strftime('%Y-%m-%d')),('date','&gt;=',(context_today() - datetime.timedelta(7)).strftime('%Y-%m-%d'))]</field>
+        <field name="context">{ 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    
+    <record id="action_magento_order_report_dashboard_today" model="ir.actions.act_window">
+        <field name="name">Today Sales</field>
+        <field name="res_model">magento.sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_magento_sale_order_product_graph"/>
+        <field name="domain">[('date','&lt;=', time.strftime('%Y-%m-%d 23:59:59')),('date','&gt;=',time.strftime('%Y-%m-%d 00:00:01'))]</field>
+        <field name="context">{ 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    
+    <record id="action_magento_order_report_dashboard_store" model="ir.actions.act_window">
+        <field name="name">Store wise Sales</field>
+        <field name="res_model">magento.sale.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_magento_sale_order_product_graph"/>
+        <field name="context">{ 'group_by_no_leaf':1,'group_by':['store_id']}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    
+    <menuitem id="menu_item_parent_magento_reporting_ept" name="Reporting" parent="menu_connector_root" sequence="9"/>
+
+    <menuitem groups="group_magento_user_ept" action="action_magento_order_report_all" id="menu_magento_report_product_all_ept" parent="menu_item_parent_magento_reporting_ept" sequence="10"/>
+
+    </data>
+</odoo>

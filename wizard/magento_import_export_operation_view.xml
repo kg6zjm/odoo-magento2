@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="view_magento_import_export_operation" model="ir.ui.view">
+			<field name="name">Magento Opration</field>
+			<field name="model">magento.import.export.ept</field>
+			<field name="arch" type="xml">
+				<form>
+					<group>
+						<field name="backend_ids" options="{'no_create':True,'no_create_edit': True}" required="1" widget="many2many_tags"/>
+					</group>
+					<notebook>
+						<page string="Import Operation">
+							<group>
+								<group>
+									<lable for="import_res_partner_category"/>
+									<field name="import_res_partner_category" nolable="1"/>
+									<field name="import_res_partner"/>
+									<field name="import_sale_order"/>
+									<field name="import_products"/>
+									<field name="import_product_stock"/>
+								</group>
+								<group cols="2">
+									<lable for="import_attribute_set"/>
+									<field name="import_attribute_set" nolable="1"/>
+									<field name="import_attribute"/>
+									<field name="import_product_category"/>
+									<field name="import_product_images"/>
+									<field name="import_specific_order"/>
+								</group>
+							</group>
+							<group>
+								<field name="import_sale_order_manually" attrs="{'invisible' : [('import_specific_order','=',False)]}"/>
+							</group>
+						</page>
+						<page string="Export Operation">
+						<group>
+							<group>
+								<lable for="update_order_status"/>
+								<field name="update_order_status" class="oe_inline" nolable="1"/>
+								<field name="export_order_invoice"/>
+								<field name="export_product_stock"/>
+							</group>
+						<group></group>
+						</group>
+						</page>
+					</notebook>
+					<footer>
+						<button name="execute" string="Execute" type="object"
+							class="oe_highlight" />
+						<button string="Cancel" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		
+		<record id="action_wizard_magento_import_export_operation" model="ir.actions.act_window">
+			<field name="name">Magento Operation </field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">magento.import.export.ept</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+		
+		<menuitem id="operation_magento_parent_menu" parent="odoo_magento2_ept.menu_connector_root"
+			name="Operations" sequence="8"/>
+			
+		<menuitem id="magento_all_operation_menu" parent="odoo_magento2_ept.operation_magento_parent_menu"
+			name="All Operations" sequence="1" action="action_wizard_magento_import_export_operation"/>
+	</data>
+</odoo>

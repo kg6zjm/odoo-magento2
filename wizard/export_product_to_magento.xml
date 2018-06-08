@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+	        <record id="view_export_magento_products" model="ir.ui.view">
+            <field name="name">Export to Magento</field>
+            <field name="model">export.magento.products</field>
+            <field name="arch" type="xml">
+                <form string="Export to Magento">
+	                <footer>
+                    	<button name="export" string="Export" type="object" class="oe_highlight"/>						
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_export_magento_products" 
+        	name="Export product to Magento"
+        	src_model='magento.product.product'
+        	res_model='export.magento.products'
+        	view_type="form" 
+        	view_mode="form"
+            key2="client_action_multi"
+            target="new"/>
+        
+        <act_window id="action_export_magento_products_" 
+        	name="Export product to Magento"
+        	src_model='magento.product.template'
+        	res_model='export.magento.products'
+        	view_type="form" 
+        	view_mode="form"
+            key2="client_action_multi"
+            target="new"/>
+	</data>
+</odoo>

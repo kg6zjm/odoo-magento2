@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>    
+		<record id="view_res_config_magento_backend" model="ir.ui.view">
+			<field name="name">Configure Instance</field>
+			<field name="model">res.config.magento.backend</field>
+			<field name="arch" type="xml">
+				<form string="Configure Instance" class="oe_form_configuration">
+					<sheet>
+						<label for="name" class="oe_edit_only" />
+						<h1>
+							<field name="name" required="1" class="oe_inline" />
+						</h1>
+						<group>
+							<group>
+								<field name='version' required="1" />
+								<field name="token" required="1"/>
+								<field name='warehouse_ids' required="1" widget="many2many_tags" />
+							</group>
+							<group>
+								<field name='password' invisible="1"/>
+								<field name='location' required="1" />
+							</group>
+						</group>
+						<footer>
+							<button string="Create" type="object" name="test_magento_connection"
+								class="oe_highlight" />
+							or
+							<button string="Cancel" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="res_config_action_magento_backend_ept" model="ir.actions.act_window">
+			<field name="name">Magento Instance</field>
+			<field name="res_model">res.config.magento.backend</field>
+			<field name="view_mode">form</field>
+			<field name="view_type">form</field>
+			<field name="target">new</field>
+			<field name="view_id" ref="view_res_config_magento_backend" />
+		</record>
+		
+		<record id="view_magento_res_config_settings_ept" model="ir.ui.view">
+			<field name="name">Connector Settings EPT</field>
+			<field name="model">connector.config.settings</field>
+			<field name="arch" type="xml">
+				<form string="Configure Connector" version="7.0"
+					class="oe_form_configuration">
+					<header>
+						<button string="Apply" type="object" name="execute" class="oe_highlight" />
+						or
+						<button string="Cancel" type="object" name="cancel" class="oe_link" />
+					</header>
+					<separator string="Steps to generate Integration key in Magento "/>
+               		<div>
+              			<span><strong> Show Tutorial </strong> </span>
+               			<field name="show_tutorial"></field>
+               			<div attrs="{'invisible':[('show_tutorial','=',False)]}">
+               			<br/><b><h2>Creating Magento Integration for Odoo</h2></b>
+               			<ul>
+                                <li> Go to System > Integration menu
+                               
+                                    <br/><br/><img src='odoo_magento2_ept/static/src/img/1.png' height="50%" width="80%" class="connector_img_tuto"/>
+                                </li>	
+                        </ul>
+                        <ul>        
+                                <li>Click On button “Add New Integration”:</li>
+                                	<br/><br/><img src='odoo_magento2_ept/static/src/img/2.png' height="50%" width="80%" class="connector_img_tuto"/>
+                         </ul>
+                         <ul>
+                         	<li>
+	                               Enter General Information like name for integration, Email And current user’s password:
+	                                <br/><br/><img src='odoo_magento2_ept/static/src/img/3.png' height="50%" width="80%" class="connector_img_tuto"/>
+                          	</li>
+                          </ul>
+                          <ul>	
+                           	<li>
+                              		Go to API tab > and Select “ALL” In Resource access and Click on “Save” button to save Integration :
+
+                               		<br/><br/><img src='odoo_magento2_ept/static/src/img/4.png' height="50%" width="80%" class="connector_img_tuto"/>
+                         	</li>
+                         </ul>   
+                         <ul>	
+                           	<li>	
+									To active Integration click on “Activate” link.
+                               		<br/><br/><img src='odoo_magento2_ept/static/src/img/5.png' height="50%" width="80%" class="connector_img_tuto"/>
+                         	</li>
+                         </ul>    
+                         <ul>	
+                           	<li>
+									Click on “Allow” button in opened Pop up :                               		
+									<br/><br/><img src='odoo_magento2_ept/static/src/img/6.png' height="50%" width="80%" class="connector_img_tuto"/>
+                         	</li>
+                         	</ul> 
+                            <ul>	
+                           	<li>
+								Save value of Access token Click on “Done” To use Integration.									
+								<br/><br/><img src='odoo_magento2_ept/static/src/img/7.png' height="50%" width="80%" class="connector_img_tuto"/>
+                         	</li>
+                         	</ul>     
+                            
+                            <ul>	
+                           	<li>
+								Apply these all Integration key in magento instance setting 						
+								<br/><br/><img src='odoo_magento2_ept/static/src/img/8.png' height="50%" width="80%" class="connector_img_tuto"/>
+                         	</li>
+                         </ul>       
+                           
+               			</div>
+               			</div>
+					<separator string="Instance Configuration" />
+					<group>
+						<label for="backend_id"/>
+						<div>
+							<div>
+								<field name="backend_id" widget="selection"
+									 attrs="{'required':[('backend_id','!=',False)]}"
+									class="oe_inline" />
+								<button string="Create More Instance" icon="fa-arrow-right"
+									name="%(res_config_action_magento_backend_ept)d" type="action" class="oe_link" groups="odoo_magento2_ept.group_connector_manager" />
+							</div>
+						</div>
+					</group>
+					<div  attrs="{'invisible': [('backend_id', '=', False)]}">
+							<group>
+								<label for="warehouse_ids"/> 
+								<div>
+									<div>
+										<field name="warehouse_ids" class="oe_inline" attrs="{'required':[('backend_id','!=', False)]}" widget="many2many_tags"/>
+									</div>
+								</div>
+							</group>
+							
+							<group>
+								<label for="version"/>
+								<div>
+									<div>
+										<field name="version" class="oe_inline" attrs="{'required':[('backend_id','!=', False)]}"/>		
+									</div>
+								</div>
+							</group>
+							<group>
+								<label for="location"/>
+								<div>
+									<div>
+										<field name="location" class="oe_inline" attrs="{'required':[('backend_id','!=', False)]}"/>		
+									</div>
+								</div>
+							</group>
+						<group>
+							<label for="product_stock_field_id"/>
+							<div>
+								<div>
+									<field name="product_stock_field_id" class="oe_inline" attrs="{'required':[('backend_id','!=', False)]}"/>
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="pricelist_id"/>
+							<div>
+								<field name="pricelist_id" class="oe_inline" attrs="{'required':[('backend_id','!=', False)]}"></field>
+							</div>
+						</group>
+						<group>
+							<label for="catalog_price_scope"/>
+							<div>
+								<field name="catalog_price_scope" class="oe_inline" attrs="{'required':[('backend_id','!=', False)]}"></field>
+							</div>
+						</group>
+						<group>
+							<label for="auto_create_product"/>
+							<div>
+								<field name="auto_create_product"></field>
+							</div>
+						</group>
+						<group>
+							<label for="is_only_import_export_basic_info"/>
+							<div>
+								<field name="is_only_import_export_basic_info"></field>
+							</div>
+						</group>
+					</div>
+					<separator string="Other Configuration"
+						attrs="{'invisible': [('backend_id', '=', False)]}" />
+					<div attrs="{'invisible': [('backend_id', '=', False)]}">
+						<group>
+							<label for="allow_import_traslation"/>
+							<div>
+								<field name="allow_import_traslation"></field>
+							</div>
+						</group>
+						<group>
+							<label for="allow_import_image_of_products"/>
+							<div>
+								<field name="allow_import_image_of_products"></field>
+							</div>
+						</group>
+						<group>
+							<label for="allow_so_import_on_fly"/>
+							<div>
+								<field name="allow_so_import_on_fly"></field>
+							</div>																																														
+						</group>
+						<group>
+							<label for="product_import_page_size"/>
+							<div>
+								<field name="product_import_page_size" class="oe_inline"></field>
+							</div>
+						</group>
+						<group>
+							<label for="customer_import_page_size"/>
+							<div>
+								<field name="customer_import_page_size" class="oe_inline"></field>
+							</div>
+						</group>
+						<group>
+							<label for="is_import_product_stock"/>
+							<div>
+								<field name="is_import_product_stock" class="oe_inline"/>
+							</div>
+						</group>
+						<group attrs="{'invisible' : [('is_import_product_stock','=',False)],'required' : [('is_import_product_stock','=',True)]}">
+							<label for="import_stock_warehouse"/>
+							<div>
+								<field name="import_stock_warehouse" class="oe_inline" />
+							</div>
+						</group>
+						
+						
+					</div>
+					<separator string="Auto Cron Configuration"
+						attrs="{'invisible': [('backend_id', '=', False)]}" />
+					<div attrs="{'invisible': [('backend_id', '=', False)]}">
+						<group>
+							<label for="import_customer_groups"/>
+							<div>
+								<div>
+									<field name="import_customer_groups"/>
+									<label for="id" string="  "/>
+									<field name="import_customer_group_interval_number" attrs="{'invisible':[('import_customer_groups','=',False)],'required':[('import_customer_groups','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_customer_group_interval_type"  attrs="{'invisible':[('import_customer_groups','=',False)],'required':[('import_customer_groups','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_customer_group_next_execution"  attrs="{'invisible':[('import_customer_groups','=',False)],'required':[('import_customer_groups','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_customer_group_user_id"  attrs="{'invisible':[('import_customer_groups','=',False)],'required':[('import_customer_groups','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="import_customers"/>
+							<div>
+								<div>
+									<field name="import_customers"/>
+									<label for="id" string="  "/>
+									<field name="import_customers_interval_number" attrs="{'invisible':[('import_customers','=',False)],'required':[('import_customers','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_customers_interval_type"  attrs="{'invisible':[('import_customers','=',False)],'required':[('import_customers','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_customers_next_execution"  attrs="{'invisible':[('import_customers','=',False)],'required':[('import_customers','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_customer_user_id"  attrs="{'invisible':[('import_customers','=',False)],'required':[('import_customers','=',True),('backend_id','!=',False)]}" class="oe_inline"/>		
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="import_product_categories"/>
+							<div>
+								<div>
+									<field name="import_product_categories"/>
+									<label for="id" string="  "/>
+									<field name="import_product_categories_interval_number" attrs="{'invisible':[('import_product_categories','=',False)],'required':[('import_product_categories','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_product_categories_interval_type"  attrs="{'invisible':[('import_product_categories','=',False)],'required':[('import_product_categories','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_product_categories_next_execution"  attrs="{'invisible':[('import_product_categories','=',False)],'required':[('import_product_categories','=',True),('backend_id','!=',False)]}" class="oe_inline"/>		
+									<field name="import_product_category_user_id"  attrs="{'invisible':[('import_product_categories','=',False)],'required':[('import_product_categories','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="import_products"/>
+							<div>
+								<div>
+									<field name="import_products"/>
+									<label for="id" string="  "/>
+									<field name="import_products_interval_number" attrs="{'invisible':[('import_products','=',False)],'required':[('import_products','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_products_interval_type"  attrs="{'invisible':[('import_products','=',False)],'required':[('import_products','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_products_next_execution"  attrs="{'invisible':[('import_products','=',False)],'required':[('import_products','=',True),('backend_id','!=',False)]}" class="oe_inline"/>		
+									<field name="import_product_user_id"  attrs="{'invisible':[('import_products','=',False)],'required':[('import_products','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="import_sale_orders"/>
+							<div>
+								<div>
+									<field name="import_sale_orders"/>
+									<label for="id" string="  "/>
+									<field name="import_sale_orders_interval_number" attrs="{'invisible':[('import_sale_orders','=',False)],'required':[('import_sale_orders','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_sale_orders_interval_type"  attrs="{'invisible':[('import_sale_orders','=',False)],'required':[('import_sale_orders','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_sale_orders_next_execution"  attrs="{'invisible':[('import_sale_orders','=',False)],'required':[('import_sale_orders','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="import_sale_order_user_id"  attrs="{'invisible':[('import_sale_orders','=',False)],'required':[('import_sale_orders','=',True),('backend_id','!=',False)]}" class="oe_inline"/>		
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="export_product_stock"/>
+							<div>
+								<div>
+									<field name="export_product_stock"/>
+									<label for="id" string="  "/>
+									<field name="export_product_stock_interval_number" attrs="{'invisible':[('export_product_stock','=',False)],'required':[('export_product_stock','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="export_product_stock_interval_type"  attrs="{'invisible':[('export_product_stock','=',False)],'required':[('export_product_stock','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="export_product_stock_next_execution"  attrs="{'invisible':[('export_product_stock','=',False)],'required':[('export_product_stock','=',True),('backend_id','!=',False)]}" class="oe_inline"/>			
+									<field name="export_product_stock_user_id"  attrs="{'invisible':[('export_product_stock','=',False)],'required':[('export_product_stock','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="update_order_status"/>
+							<div>
+								<div>
+									<field name="update_order_status"/>
+									<label for="id" string="  "/>
+									<field name="update_order_status_interval_number" attrs="{'invisible':[('update_order_status','=',False)],'required':[('update_order_status','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="update_order_status_interval_type"  attrs="{'invisible':[('update_order_status','=',False)],'required':[('update_order_status','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="update_order_status_next_execution"  attrs="{'invisible':[('update_order_status','=',False)],'required':[('update_order_status','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="update_order_status_user_id"  attrs="{'invisible':[('update_order_status','=',False)],'required':[('update_order_status','=',True),('backend_id','!=',False)]}" class="oe_inline"/>			
+								</div>
+							</div>
+						</group>
+						<group>
+							<label for="export_invoice"/>
+							<div>
+								<div>
+									<field name="export_invoice"/>
+									<label for="id" string="  "/>
+									<field name="export_invoice_interval_number" attrs="{'invisible':[('export_invoice','=',False)],'required':[('export_invoice','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="export_invoice_interval_type"  attrs="{'invisible':[('export_invoice','=',False)],'required':[('export_invoice','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+									<field name="export_invoice_next_execution"  attrs="{'invisible':[('export_invoice','=',False)],'required':[('export_invoice','=',True),('backend_id','!=',False)]}" class="oe_inline"/>			
+									<field name="export_invoice_user_id"  attrs="{'invisible':[('export_invoice','=',False)],'required':[('export_invoice','=',True),('backend_id','!=',False)]}" class="oe_inline"/>
+								</div>
+							</div>
+						</group>
+						
+					</div>
+				</form>
+			</field>
+		</record>
+
+		
+		<record id="action_connector_config_settings" model="ir.actions.act_window">
+            <field name="name">Configure Connector</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">connector.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem id="menu_connector_config_settings" name="Settings" parent="menu_magento_root"
+            sequence="1" action="action_connector_config_settings" groups="odoo_magento2_ept.group_connector_manager"/>
+		
+
+	</data>
+</odoo>
+

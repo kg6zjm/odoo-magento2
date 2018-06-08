@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <record id="view_magento_product_category_form" model="ir.ui.view">
+            <field name="name">magento.product.category.form</field>
+            <field name="model">magento.product.category</field>
+            <field name="arch" type="xml">
+                <form string="Magento Product Category">
+                	<sheet>
+                		<div class="oe_button_box oe_right" name="button_box">
+                            <button class="oe_stat_button" type="object" name="toggle_active" icon="fa-archive">
+                                <field name="is_active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                		<group>
+                			<h1><field name="name" required="1" nolabel="1" placeholder="category name"/></h1>
+                		</group>
+                		<group>
+                			<field name="magento_parent_id" domain="[('backend_id','=',backend_id)]"/>
+                		</group>
+	                    <group>
+	                    	<field name="backend_id" options="{'no_create':true}"/>
+		                	<field name="magento_id" readonly="1" invisible="1"/>
+	                    </group>
+		            <notebook>
+		            	<page string="Child Categories">
+		                    <field name="magento_child_ids"/>
+		            	</page>
+		            	<page string="Category Attributes">
+			            	<group cols="2">
+			            		<lable for="display_mode"/>
+				                <field name="display_mode" nolable="1"/>
+				                <field name="is_anchor"/>
+				                <field name="use_default_available_sort_by"/>
+				                <field name="custom_design"/>
+				                <field name="custom_design_from"/>
+				                <field name="custom_apply_to_products"/>
+				                <field name="custom_design_to"/>
+				                <field name="page_layout"/><br/><br/>
+				                <field name="custom_layout_update"/>
+			            	</group>
+		            	</page>
+		            	<page string="Category Description">
+		            		<group>
+			        			<field name="description"/>
+			        			<field name="meta_title"/>
+			                	<field name="meta_description"/>
+			                	<field name="meta_keywords"/>
+			                </group>
+		            	</page>
+		            	<page string="Category Image">
+		            		<group cols="2">
+		            		<group>	
+		        				<field name="image_binary" widget="image" class="oe_avatar oe_inline"
+		                           filename="image"/>
+		                    </group>
+		            		<group>
+		        				<field name="image"/>
+		        			</group>
+		        			
+		        			</group>
+		        			<group cols="2">
+		        			<lable for="thumbnail_like_image"/>
+		                		<field name="thumbnail_like_image"/>	
+		                	</group>
+		                	<group name="thumbnail_grp"
+		                           attrs="{'invisible': [('thumbnail_like_image', '=', True)]}" cols="2">
+		                   <group>
+		                    	 <field name="thumbnail_binary" widget="image" class="oe_avatar oe_inline"
+		                               filename="thumbnail"/>
+		                    </group>
+							<group>
+		                        <field name="thumbnail"/>
+		                    </group>
+		                	</group>
+		            	</page>
+		            </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_magento_product_category_tree" model="ir.ui.view">
+            <field name="name">magento.product.category.tree</field>
+            <field name="model">magento.product.category</field>
+            <field name="arch" type="xml">
+                <tree string="Magento Product Category">
+                    <field name="complete_category_name" string="Name"/>
+                    <field name="backend_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="magento_product_category_action" model="ir.actions.act_window">
+			<field name="name">Magento Product Category</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">magento.product.category</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+	<record id="magento_product_category_search_view" model="ir.ui.view">
+     	<field name="name">magento.product.category.search.view</field>
+     	<field name="model">magento.product.category</field>
+     	<field name="arch" type="xml">
+     		<search string="Magento Category search view">
+     			<field name="name"/>
+     			<group expand="0" string="Group By">
+     				<filter string="Instance" context="{'group_by' : 'backend_id'}"/>
+     			</group>
+     		</search>
+     	</field>
+     </record>
+		
+		  <record id="action_export_magento_product_category" model="ir.actions.server">
+            <field name="name">Export Product Category</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="odoo_magento2_ept.model_magento_product_category"/>
+            <field name="binding_model_id" ref="odoo_magento2_ept.model_magento_product_category"/>
+            <field name="code">
+records.export_product_category()
+            </field>
+           </record>
+           
+           <record id="action_update_magento_product_category" model="ir.actions.server">
+            <field name="name">Update Product Category</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="odoo_magento2_ept.model_magento_product_category"/>
+            <field name="binding_model_id" ref="odoo_magento2_ept.model_magento_product_category"/>
+            <field name="code">
+records.update_product_category()
+            </field>
+           </record>
+		
+		<menuitem id="magento_product_category_and_attribute" parent="odoo_magento2_ept.menu_connector_root"
+					name="Categories &amp; Attributes" sequence="3"/>
+		
+        <menuitem id="magento_product_category_menu" action="magento_product_category_action"
+        	name="Product Category" parent="odoo_magento2_ept.magento_product_category_and_attribute" sequence="1"/>
+    </data>
+</odoo>

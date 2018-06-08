@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>  
+	 <menuitem id="menu_connector_root"
+            name="Magento" string="Magento"
+            groups="group_magento_user_ept"
+            sequence="10"
+            web_icon="odoo_magento2_ept,static/description/icon.png"/> 
+              
+     <menuitem id="menu_queue"
+            name="Jobs"
+            sequence="10"
+            parent="menu_connector_root"/>
+            
+   	 <menuitem id="menu_queue_job_channel"
+            action="action_queue_job_channel"
+            sequence="12"
+            parent="menu_queue"
+            groups="base.group_no_one"/>
+            
+  	 <menuitem id="menu_queue_job_function"
+            action="action_queue_job_function"
+            string="Jobs"
+            sequence="14"
+            parent="menu_queue"
+            groups="base.group_no_one"/>
+
+     <menuitem id="menu_queue_job"
+            action="action_queue_job"
+            string="Logs"
+            sequence="18"
+            parent="menu_queue"
+            groups="group_magento_user_ept"/>
+    
+            
+    <menuitem id="menu_magento_root"
+        parent="menu_connector_root"
+        name="Configuration"
+        sequence="11"
+        groups="group_connector_manager"/>
+	
+	<menuitem id="all_insatnce_details" name="Instance Details"
+				parent="menu_magento_root" sequence="2"></menuitem>
+	
+    <menuitem id="menu_magento_backend"
+        name="Instance"
+        parent="all_insatnce_details"
+        action="action_magento_backend"
+        groups="group_connector_manager"/>
+
+    <menuitem id="menu_magento_website"
+        name="Websites"
+        parent="all_insatnce_details"
+        sequence="20"
+        action="action_magento_website"
+        groups="group_connector_manager"/>
+
+    <menuitem id="menu_magento_store"
+        name="Stores"
+        parent="all_insatnce_details"
+        sequence="30"
+        action="action_magento_store"
+        groups="group_connector_manager"/>
+
+    <menuitem id="menu_magento_storeview"
+        name="Storeviews"
+        parent="all_insatnce_details"
+        sequence="40"
+        action="action_magento_storeview"
+        groups="group_connector_manager"/> 
+        
+   <menuitem id="menu_main_magento_dashboard_ept" name="Dashboard" parent="odoo_magento2_ept.menu_connector_root" sequence="1" groups="group_magento_user_ept" action="action_magento_website_dashboard"/>
+  </data>
+</odoo>

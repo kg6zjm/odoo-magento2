@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+		<record id="view_partner_category_form" model="ir.ui.view">
+            <field name="name">res.partner.category.form</field>
+            <field name="model">res.partner.category</field>
+            <field name="inherit_id" ref="base.view_partner_category_form" />
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="magento_bind_ids">
+                        <form string="Magento">
+                        	<group>
+                            	<field name="backend_id"/>
+                            	<field name="magento_id"/>
+                            </group>
+                        </form>
+                        <tree string="Magento">
+                            <field name="backend_id"/>
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+		
+	</data>
+</odoo>

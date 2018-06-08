@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_magento_product_image_form" model="ir.ui.view">
+        	<field name="name">magento.product.image.form_view</field>
+        	<field name="model">magento.product.image</field>
+        	<field name="arch" type="xml">
+        		<form>
+        			<sheet>
+        				<group>
+        					<group>
+        						<field name="backend_id" options="{'no_create':True}"/>
+        						<field name="magento_id" readonly="1"/>
+        						<field name="name"/>
+        						<field name="label"/>
+        						<field name="extension"/>
+        						<field name="sequence"/>
+        						<field name="link"/>
+        						<field name="url" widget="url"/>
+        					</group>
+        					<group>
+        						<field name="id" invisible="1"/>
+        						<field name="is_base_image"/>
+        						<field name="is_small_image"/>
+        						<field name="is_thumbnail"/>
+        						<field name="is_swatch_image"/>
+        						<field name="file" widget="image" nolabel="1" class="oe_avatar"
+	                           		   filename="name" attrs="{'invisible':['|',('id','=',False),('link','=',False)]}"/>
+        						<field name="file_db_store" widget="image" filename="name" nolabel="1" class="oe_avatar" attrs="{'invisible':[('link','=',True)]}" />
+					</group>
+        				</group>
+        				<group>
+                             <p class="oe_grey oe_inline" colspan="4">	Edit an image above or click on 'link' above to add an image with an url </p>
+        				</group>
+        				<notebook>
+        					<page string="Comments">
+        						<field name="comments"/>
+        					</page>
+        				</notebook>
+        			</sheet>
+        		</form>
+        	</field>
+        </record>
+        
+        <record id="magento_product_img_form_view" model="ir.ui.view">
+		    <field name="model">magento.product.product</field>
+		    <field name="priority">30</field>
+		    <field name="arch" type="xml">
+		        <form string="_">
+		        	<sheet>
+			            <group string="Magento images">
+				            <field name="backend_id" invisible="True"/>
+				            <field name="erp_id" invisible="True"/>
+				            <field name="magento_product_image_ids" nolabel="1">
+				                <tree editable="bottom">
+				                	<field name="link" invisible="1"/>
+				                    <field name="id" invisible="1"/>
+				                	<field name="file_db_store" string="File" widget="image" class="oe_avatar"
+			                           filename="name"/>
+			                        <field name="file" widget="image" filename="name" nolabel="1" class="oe_avatar" attrs="{'invisible':['|',('id','=',False),('link','=',False)]}"/>
+			                        <field name="name"/>
+			                        <field name="sequence"/>
+				                    <field name="label"/>
+				                    <field name="extension" string="ext."/>
+				                    <field name="magento_id" readonly="1"/>
+				                </tree>
+				            </field>
+				        </group>            
+		            </sheet>
+		        </form>
+		    </field>
+		</record>       
+        <record id="magento_product_image_tree_view" model="ir.ui.view">
+        	<field name="name">magento.product.image.tree.view</field>
+        	<field name="model">magento.product.image</field>
+        	<field name="arch" type="xml">
+        		<tree>
+        			<field name="name"/>
+        			<field name="magento_id"/>
+        			<field name="sequence"/>
+        		</tree>
+        	</field>
+        </record>
+        
+    </data>
+</odoo>

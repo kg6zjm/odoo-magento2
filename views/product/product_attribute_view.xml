@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            
+        <menuitem id="menu_magento_product_attribute_main"
+          name="Attributes"
+          parent="odoo_magento2_ept.magento_product_category_and_attribute"
+          sequence="5" />
+
+        <record id="attribute_attribute_tree_view" model="ir.ui.view">
+            <field name="name">attribute.attribute.tree</field>
+            <field name="model">magento.product.attribute</field>
+            <field name="arch" type="xml">
+                <tree string="Attribute" create="false" edit="false">
+                    <field name="name" />
+                    <!-- <field name="attribute_type" />  -->
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_attribute_attribute_search" model="ir.ui.view">
+            <field name="name">attribute.attribute.list</field>
+            <field name="model">magento.product.attribute</field>
+            <field name="arch" type="xml">
+                <search string="Search Attributes">
+                    <field name="name"/>
+               </search>
+            </field>
+        </record>
+
+        <record id="attribute_attribute_form_action" model="ir.actions.act_window">
+            <field name="name">Product Attribute</field>
+            <field name="res_model">magento.product.attribute</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_attribute_attribute_search"/>
+            <field name="context">{"search_default_user_id":uid,"force_model": 'product.product'}</field>
+            <field name="help"></field>
+        </record>
+        
+        <!-- Magento attribute  -->
+		<record id="magento_product_attribute_tree_view" model="ir.ui.view">
+		    <field name="model">magento.product.attribute</field>
+		    <field name="arch" type="xml">
+		        <tree string="Attribute">
+		            <field name="erp_id"/>
+		            <field name="attribute_code"/>
+		            <field name="backend_id"/>
+		        </tree>
+		    </field>
+		</record>
+		
+		<record id="magento_product_attribute_form_view" model="ir.ui.view">
+		    <field name="model">magento.product.attribute</field>
+		    <field name="arch" type="xml">
+		        <form string="main">
+		        	<sheet>
+		        		<div class="oe_button_box" name="button_box">
+		        			<button class="oe_stat_button"
+                            icon="fa-bars" name="open_attribute_value" type="object" string="Attribute Values"/>                            
+		        		</div>
+		        		<div class="oe_title">
+                       		<h1>
+                            	<field name="frontend_label"/>
+                        	</h1>
+                    	</div>
+		            <group name="main" string="Main Fields" col="4">              
+		                <field name="attribute_code"
+		                       attributes="{'readonly': [('magento_id', '!=', False)]}"/>
+		                <field name="backend_id" string="Instance" options="{'no_create':True}" />
+						 <field name="type"/>               
+		                <field name="scope"/>
+		                <field name="frontend_input"/>
+		                <field name="erp_id"
+		                       invisible="context.get('hide_erp_id')"/>
+		            </group>
+		            <group name="other" string="Other fields" col="4">
+		            	<field name="options" groups="base.group_no_one"/>
+		                <field name="default_value"
+		                       attrs="{'invisible':[('frontend_input', 'in',
+		                       ['media_image', 'multiselect'])]}"/>
+		                <field name="entity_type_id"/>
+		                <field name="group_id"/>
+		                <field name="apply_to"/>
+		                <field name="position"/>
+		                <field name="note"/>
+		            </group>
+		            <separator/>
+		            <group string="Boolean Fields" name="boolean"  col="6"
+		                   attrs="{'invisible':[
+		                        ('frontend_input', 'in', ['media_image'])]}">
+		                <field name="is_required"/>
+		                <field name="is_filterable"/>
+		                <field name="is_visible"/>
+		                <field name="is_global"/>
+		                <field name="is_searchable"/>
+		                <field name="is_visible_on_front"/>
+		                <field name="is_unique"/>
+		                <field name="is_configurable"/>
+		                <field name="is_visible_in_advanced_search"/>
+		                <field name="is_used_for_price_rules"/>
+		                <field name="is_comparable"/>
+		                <field name="is_user_defined"/>
+		                <field name="is_used_for_promo_rules"/>
+		                <field name="used_for_sort_by"/>
+		                <field name="is_wysiwyg_enabled"/>
+		                <field name="used_in_product_listing"/>
+		                	 <field name="additional_check"/>
+		                <span colspan="2"/>
+		                <field name="is_html_allowed_on_front"/>
+		            </group>
+		            <group name="system" string="System Info." col="4">
+		                <field name="sync_date" readonly="1"/>
+		                <field name="magento_id" readonly="1"/>
+		            </group>
+		            </sheet>
+		        </form>
+		    </field>
+		</record>
+				
+	 <record id="magento_product_attribute_search_view" model="ir.ui.view">
+     	<field name="name">magento.product.product.search.view</field>
+     	<field name="model">magento.product.attribute</field>
+     	<field name="arch" type="xml">
+     		<search string="Magento product search view">
+     			<field name="name"></field>
+     			<field name="frontend_label"></field>
+     			<field name="attribute_code"></field>
+     			<group expand="0" string="Group By">
+     				<filter string="Instance" context="{'group_by' : 'backend_id'}"/>
+     				<filter string="Name" context="{'group_by' : 'frontend_label'}"/>
+     				<filter string="Attribute" context="{'group_by' : 'erp_id'}"/>
+     			</group>
+     		</search>
+     	</field>
+     </record>
+		<record id="magento_product_attribute_action" model="ir.actions.act_window">
+		    <field name="type">ir.actions.act_window</field>
+		    <field name="res_model">magento.product.attribute</field>
+		    <field name="view_type">form</field>
+		    <field name="name">Magento attribute</field>
+		    <field name="view_id" ref="magento_product_attribute_tree_view"/>
+		    <field name="search_view_id" ref="magento_product_attribute_search_view"/>
+		    <field name="help" type="html">
+		      <p class="oe_view_nocontent_create">
+		        Click to add an attribute.
+		      </p>
+		    </field>
+		</record>
+		
+		<menuitem id="menu_magento_product_attribute"
+		          name="Attributes"
+		          action="magento_product_attribute_action"
+		          parent="odoo_magento2_ept.magento_product_category_and_attribute"
+		          sequence="4"/>
+		        
+         <record id="action_export_product_attibute" model="ir.actions.server">
+            <field name="name">Export Attribute</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="odoo_magento2_ept.model_magento_product_attribute"/>
+            <field name="binding_model_id" ref="odoo_magento2_ept.model_magento_product_attribute"/>
+            <field name="code">
+records.export_product_attribute()
+            </field>
+           </record>
+           
+           <record id="action_update_product_attibute" model="ir.actions.server">
+            <field name="name">Update Attribute</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="odoo_magento2_ept.model_magento_product_attribute"/>
+            <field name="binding_model_id" ref="odoo_magento2_ept.model_magento_product_attribute"/>
+            <field name="code">
+records.update_product_attribute()
+            </field>
+           </record>
+           
+    </data>
+</odoo>

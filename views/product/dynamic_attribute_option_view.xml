@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>     
+ 		<record model="ir.ui.view" id="product_attributes_extended_form_view">
+            <field name="name">product.attributes.normal.wizard</field>
+            <field name="model">magento.product.product</field>
+            <field name="arch" type="xml">
+                <form string="Product">
+                    <group name="name_set">
+                        <field name='attribute_set_id' readonly="1"/>
+                    </group>
+                    <separator name="attributes_placeholder" string="attributes_placeholder" colspan="4"/>
+                    <footer>
+                        <button name="save_and_close_product_attributes" string="Save and Close" type="object" class="oe_highlight"/>
+                        or
+                        <button special="cancel" string="Cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+         <record model="ir.ui.view" id="product_attributes_extended_template_form_view">
+            <field name="name">product.attributes.normal.wizard</field>
+            <field name="model">magento.product.template</field>
+            <field name="arch" type="xml">
+                <form string="Product">
+                    <group name="name_set">
+                        <field name='attribute_set_id' readonly="1"/>
+                    </group>
+                    <separator name="attributes_placeholder" string="attributes_placeholder" colspan="4"/>
+                    <footer>
+                        <button name="save_and_close_product_attributes" string="Save and Close" type="object" class="oe_highlight"/>
+                        or
+                        <button special="cancel" string="Cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+     </data>
+ </odoo>

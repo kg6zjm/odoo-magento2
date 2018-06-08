@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="magento_attribute_group_tree_view" model="ir.ui.view">
+		    <field name="model">magento.attribute.group</field>
+		    <field name="arch" type="xml">
+		        <tree string="Attribute Group">
+		        	<field name="attribute_set_id" required="1"/>
+		        	<field name="name"/>
+		        </tree>
+		    </field>
+		</record>
+		
+		
+		<record id="magento_attribute_group_form_view" model="ir.ui.view">
+		    <field name="model">magento.attribute.group</field>
+		    <field name="arch" type="xml">
+		        <form string="main">
+		        	<sheet>
+		        	<div class="oe_title">
+		        		<h1>
+		        			<field name="name"/>
+		        		</h1>
+		        	</div>
+		        	 <group>
+		            	<group>
+		            	<field name="attribute_set_id" required="1"/>        
+		            	<field name="backend_id" required="1" options="{'no_create':True}"/>
+		            	<field name="sort_order"/>
+						</group>
+						<group>            	
+		            		<field name="attribute_list" groups="base.group_no_one" />
+						</group>            	
+		             </group>
+		             <notebook>
+						<page string="Attributes">
+							<field name="magento_attribute_ids"/>
+						</page>
+					</notebook>
+		            </sheet>
+		        </form>
+		    </field>
+		</record>
+		
+	<record id="magento_product_attribute_group_search_view" model="ir.ui.view">
+     	<field name="name">magento.product.product.search.view</field>
+     	<field name="model">magento.attribute.group</field>
+     	<field name="arch" type="xml">
+     		<search string="Magento attribute group search view">
+     			<field name="name"></field>
+     			<field name="attribute_set_id"></field>
+     			<group expand="0" string="Group By">
+     				<filter string="Instance" context="{'group_by' : 'backend_id'}"/>
+     				<filter string="Attribute Set" context="{'group_by' : 'attribute_set_id'}"/>
+     			</group>
+     		</search>
+     	</field>
+     </record>
+		
+		<record id="magento_attribute_group_action" model="ir.actions.act_window">
+		    <field name="type">ir.actions.act_window</field>
+		    <field name="res_model">magento.attribute.group</field>
+		    <field name="view_type">form</field>
+		    <field name="name">Magento Attribute Group</field>
+		    <field name="view_mode">tree,form</field>
+		    <field name="help" type="html">
+		      <p class="oe_view_nocontent_create">
+		        Click to add an attribute group.
+		      </p>
+		    </field>
+		</record>
+		
+		<menuitem id="menu_magento_attribute_group"
+		          name="Attribute Groups"
+		          action="magento_attribute_group_action"
+		          parent="odoo_magento2_ept.magento_product_category_and_attribute"
+		          sequence="3"/>
+
+    </data>
+</odoo>

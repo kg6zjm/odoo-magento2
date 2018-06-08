@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Magento attribute set-->
+		<record id="magento_attribute_set_tree_view" model="ir.ui.view">
+		    <field name="model">magento.attribute.set</field>
+		    <field name="arch" type="xml">
+		        <tree string="Attribute set">
+		            <field name="backend_id" options="{'no_create':true}"/>
+		            <field name="attribute_set_name"/>
+		           <!--  <field name="erp_id"/> -->
+		        </tree>
+		    </field>
+		</record>
+		
+		
+		<record id="magento_attribute_set_form_view" model="ir.ui.view">
+		    <field name="model">magento.attribute.set</field>
+		    <field name="arch" type="xml">
+		        <form string="main">
+		        	<sheet>  
+		        		<div class="oe_title">
+                       		<h1>
+                            	<field name="attribute_set_name"/>
+                            	
+                        	</h1>
+                    	</div>      	
+		            <group>
+		            	<group>
+		                	<field name="backend_id" options="{'no_create':true}"/>  
+		                	<field name="magento_id" readonly="1"/>              	
+		                	<field name="sync_date"/>
+						</group>
+						<group>                
+		                	<field name="sort_order"/>
+		                	
+						</group>                
+						
+		            </group>
+		            
+		            </sheet>
+		        </form>
+		    </field>
+		</record>
+		
+		
+		<record id="magento_attribute_set_action" model="ir.actions.act_window">
+		    <field name="type">ir.actions.act_window</field>
+		    <field name="res_model">magento.attribute.set</field>
+		    <field name="view_type">form</field>
+		    <field name="name">Magento Attribute Set</field>
+		    <field name="view_mode">tree,form</field>
+		    <!--<field name="view_id" ref="magento_attribute_set_tree_view"/>-->
+		    <field name="help" type="html">
+		      <p class="oe_view_nocontent_create">
+		        Click to add an attribute set.
+		      </p>
+		    </field>
+		</record>
+		
+	<record id="magento_product_attribute_set_search_view" model="ir.ui.view">
+     	<field name="name">magento.attribute.set.search.view</field>
+     	<field name="model">magento.attribute.set</field>
+     	<field name="arch" type="xml">
+     		<search string="Magento Attribute set search view">
+     			<field name="attribute_set_name"></field>
+     			<field name="backend_id"/>
+     			<group expand="0" string="Group By">
+     				<filter string="Instance" context="{'group_by' : 'backend_id'}"/>
+     			</group>
+     		</search>
+     	</field>
+     </record>
+		
+          <record id="action_export_product_attribute_set" model="ir.actions.server">
+            <field name="name">Export Attribute Set</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="odoo_magento2_ept.model_magento_attribute_set"/>
+            <field name="binding_model_id" ref="odoo_magento2_ept.model_magento_attribute_set"/>
+            <field name="code">
+records.export_attribute_set()
+            </field>
+           </record>
+           
+            <record id="action_update_product_attribute_set" model="ir.actions.server">
+            <field name="name">Update Attribute Set</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="odoo_magento2_ept.model_magento_attribute_set"/>
+            <field name="binding_model_id" ref="odoo_magento2_ept.model_magento_attribute_set"/>
+            <field name="code">
+records.update_attribute_set()
+            </field>
+           </record>
+           
+           <menuitem id="menu_magento_attribute_set"
+		          name="Attribute Sets"
+		          action="magento_attribute_set_action"
+		          parent="odoo_magento2_ept.magento_product_category_and_attribute"
+		          sequence="2"/>
+		          
+    </data>
+</odoo>

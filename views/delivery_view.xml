@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_magento_delivery_carrier_form" model="ir.ui.view">
+            <field name="name">magento.delivery.carrier.form</field>
+            <field name="model">delivery.carrier</field>
+            <field name="inherit_id" ref="delivery.view_delivery_carrier_form" />
+            <field name="arch" type="xml">
+            		<xpath expr="//notebook[last()]" position="inside">
+	            		<page name="magento_info" string="Magento Information">
+	                    	<group name="magento_info" string="Magento">
+	                    		<field name="magento_carrier"/>
+	                    	</group>
+	                    </page>
+                    </xpath>
+            </field>
+        </record>
+        
+        <record id="magento_delivery_method_tree_view" model="ir.ui.view">
+        	<field name="name">magento.delivery.method.tree.view</field>
+        	<field name="model">delivery.carrier</field>
+        	<field name="arch" type="xml">
+        		<tree>
+        			<field name="name" string="Name"/>
+        			<field name="magento_carrier"/>
+        		</tree>
+        	</field>
+        </record>
+        
+        
+		<record id="action_delivery_method_magento" model="ir.actions.act_window">
+            <field name="name">Delivery Methods </field>
+            <field name="res_model">delivery.carrier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('magento_carrier','!=',False)]</field>
+        </record>
+        
+        <record id="action_view_magento_delivery_method_tree" model="ir.actions.act_window.view">
+        	<field name="view_mode">tree</field>
+        	<field name="view_id" ref="magento_delivery_method_tree_view"/>
+        	<field name="sequence" eval="1"/>
+        	<field name="act_window_id" ref="action_delivery_method_magento"/>
+        </record>
+        
+		<record id="action_view_magento_delivery_method_form" model="ir.actions.act_window.view">
+        	<field name="view_mode">form</field>
+        	<field name="view_id" ref="view_magento_delivery_carrier_form"/>
+        	<field name="sequence" eval="2"/>
+        	<field name="act_window_id" ref="action_delivery_method_magento"/>
+        </record>
+        
+	<menuitem action="action_delivery_method_magento" id="menu_action_delivery_methods" parent="menu_magento_root" sequence="50"/>
+    </data>
+</odoo>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+   	 <record id="view_invoice_connector_form" model="ir.ui.view">
+            <field name="name">account.invoice.connector.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <button name="action_invoice_draft" position="after">
+                	<button name="get_magento_order_status" type="object" string="Get Magento order Status" attrs="{'invisible':[('is_magento_invoice','=',False)]}"/>
+                </button>
+                <field name="user_id" position="after">
+                	<field name="is_magento_invoice" invisible="1"/>
+                	<field name="magento_order_status" attrs="{'invisible':[('is_magento_invoice','=',False)]}"/>
+                </field>
+            </field>
+        </record>
+		<!-- dashboard -->
+		<record id="magento_invoice_tree_view_ept" model="ir.ui.view">
+			<field name="name">magento.account.invoice.tree.ept</field>
+			<field name="model">account.invoice</field>
+			<field name="priority">100</field>
+			<field name="arch" type="xml">
+				<tree colors="blue:state == 'draft';black:state in ('proforma','proforma2','open');gray:state == 'cancel'"
+					string="Invoice" create="false">
+					<field name="partner_id" groups="base.group_user" />
+					<field name="commercial_partner_id" invisible="1" />
+					<field name="date_invoice" />
+					<field name="number" />
+					<field name="reference" invisible="1" />
+					<field name="name" invisible="1" />
+					<field name="journal_id" invisible="1" />
+					<field name="company_id" groups="base.group_multi_company"
+						widget="selection" />
+					<field name="user_id" string="Responsible" />
+					<field name="date_due" />
+					<field name="origin" />
+					<field name="currency_id" groups="base.group_multi_currency" />
+					<field name="residual" sum="Residual Amount" />
+					<field name="amount_untaxed" sum="Untaxed Amount" />
+					<field name="amount_total" sum="Total Amount" />
+					<field name="state" />
+					<field name="type" invisible="context.get('type',True)" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_open_invoice_tree_magento_invoices" model="ir.actions.act_window">
+            <field name="name">Magento Open Invoices</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','out_invoice'),('sale_id.magento_bind_ids','!=',False),('state','=','open')]</field>
+            <field name="context">{'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale'}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="view_id" ref="odoo_magento2_ept.magento_invoice_tree_view_ept" />
+            <field name="help" type="html">
+              <div class="oe_empty_magento_invoice">
+                  <br/><br/><br/>
+                  <p>
+                    <b>There is no any Invoice created for any of your Magento Sale Orders. </b>
+                  </p>
+              </div>
+          </field>
+        </record>
+        
+		<record id="action_paid_invoice_tree_magento_invoices" model="ir.actions.act_window">
+            <field name="name">Magento Paid Invoices</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','out_invoice'),('sale_id.magento_bind_ids','!=',False),('state','=','paid')]</field>
+            <field name="context">{'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale'}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="view_id" ref="odoo_magento2_ept.magento_invoice_tree_view_ept" />
+            <field name="help" type="html">
+              <div>
+					<br />
+					<br />
+					<br />
+					<p>
+						<b>There is no any Invoice created for any of your Magento Sale
+							Orders. </b>
+						<p>
+						</p>
+						Based on Automatic Workflow set in Order,Invoice is created. 
+						If your Automatic workflow's Invoice Policy is
+						set to "After Delivery", then once your shipping order completed,
+						you can make Invoice from Delivery Order. You can't create
+						Magento Invoice manually from here. However, you can make
+						manually invoice from Magento Sale Order.
+					</p>
+
+				</div>
+          </field>
+        </record>
+        
+        <record id="magento_view_account_invoice_filter" model="ir.ui.view">
+            <field name="name">account.invoice.select.magento</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <search string="Search Invoice">
+                    <field name="number" string="Invoice"/>
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Invoices"/>
+                    <filter name="invoices" string="Invoices" domain="[('state','not in',['draft','cancel'])]" help="Proforma/Open/Paid Invoices"/>
+                    <filter name="unpaid" string="Unpaid" domain="[('state','=','open')]" help="Unpaid Invoices"/>
+                    <separator/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="user_id" string="Salesperson"/>
+                    <separator/>
+                    <filter domain="[('user_id','=',uid)]" help="My Invoices"/>
+                    <group expand="0" string="Group By">
+                    	<filter string="Instance" context="{'group_by' : 'backend_id'}"></filter>
+                    	<filter name="group_by_partner_id" string="Partner" context="{'group_by':'partner_id'}"/>
+                        <filter string="Salesperson" context="{'group_by':'user_id'}"/>
+                        <filter string="Status" context="{'group_by':'state'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        
+		<record id="action_magento_invoice_tree1_ept" model="ir.actions.act_window">
+			<field name="name">Customer Invoices</field>
+			<field name="res_model">account.invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar,graph</field>
+			<field eval="False" name="view_id" />
+			<field name="domain">[('type','=','out_invoice'),('sale_id.magento_bind_ids','!=',False)]
+			</field>
+			<field name="context">{'default_type':'out_invoice',
+				'type':'out_invoice', 'journal_type': 'sale'}
+			</field>
+			<field name="search_view_id" ref="magento_view_account_invoice_filter" />
+			<field name="help" type="html">
+              <div>
+					<br />
+					<br />
+					<br />
+					<p>
+						<b>There is no any Invoice created for any of your Magento Sale
+							Orders. </b>
+						<p>
+						</p>
+						Based on Automatic Workflow set in Order,Invoice is created. 
+						If your Automatic workflow's Invoice Policy is
+						set to "After Delivery", then once your shipping order completed,
+						you can make Invoice from Delivery Order. You can't create
+						Magento Invoice manually from here. However, you can make
+						manually invoice from Magento Sale Order.
+					</p>
+
+				</div>
+          </field>
+		</record>
+
+		<record id="act_view_magento_invoice_tree_ept" model="ir.actions.act_window.view">
+			<field eval="1" name="sequence" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="magento_invoice_tree_view_ept" />
+			<field name="act_window_id" ref="action_magento_invoice_tree1_ept" />
+		</record>
+
+		<record id="act_view_magento_invoice_form_ept" model="ir.actions.act_window.view">
+			<field eval="2" name="sequence" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="account.invoice_form" />
+			<field name="act_window_id" ref="action_magento_invoice_tree1_ept" />
+		</record>
+		
+		<menuitem id="menu_invoice_details_parent" name="Invoice Details"
+        		sequence="7" parent="menu_connector_root"></menuitem>	
+		
+		<menuitem id="menu_magento_invoice_ept" name="Invoices"
+			parent="menu_invoice_details_parent" sequence="15"
+			action="action_magento_invoice_tree1_ept" />
+		
+    </data>
+</odoo>

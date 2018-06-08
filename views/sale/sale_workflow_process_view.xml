@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- VIEW FOR THE OBJECT : sale_workflow_process -->
+        <record id="sale_workflow_process_view_form" model="ir.ui.view">
+            <field name="name">sale_workflow_process.view_form</field>
+            <field name="model">magento.sale.workflow.process</field>
+            <field name="arch" type="xml">
+                <form string="Automatic Workflow">
+                	<sheet>
+                		<div class="oe_right oe_button_box">
+	                        <button type="object" name="view_payment_methods" class="oe_inline oe_stat_button" icon="fa-tasks" attrs="{'invisible': [('payment_methods_count','=',0)]}">
+	                            <field name="payment_methods_count" widget="statinfo" string="Payment Methods"/>
+	                        </button>
+                        </div>
+	                    <h1>
+	                        <field name="name" class="oe_inline"/>
+	                    </h1>
+	                    <group>
+	                    	<group>
+								<field name="picking_policy"/>
+			                    <field name="invoice_policy"/>
+			                </group>
+			                <group>
+			                    <field name="team_id" groups="base.group_multi_salesteams"/>
+			                </group>
+			            </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="validate_order"/>
+	                    		<field name="create_invoice"/>
+	                    		<field name="validate_picking"/>
+	                    	</group>
+	                        <group>
+	                        	<field name="validate_invoice"/>
+	                        	<field name="invoice_date_is_order_date"/>
+	                        </group>
+	                    </group>
+	                    <group>
+	                        	<field name="warning"/>	
+	                   	</group>
+	           		</sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sale_workflow_process_view_tree" model="ir.ui.view">
+            <field name="name">sale_workflow_process.view_tree</field>
+            <field name="model">magento.sale.workflow.process</field>
+            <field name="arch" type="xml">
+                <tree string="Automatic Workflow">
+                    <field name="name"/>
+                    <field name="picking_policy"/>
+                    <field name="invoice_policy"/>
+                    <field name="team_id" groups="base.group_multi_salesteams"/>
+                    <field name="validate_order"/>
+                    <field name="validate_picking"/>
+                    <field name="create_invoice" />
+                    <field name="validate_invoice"/>
+                    <field name="invoice_date_is_order_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="act_sale_workflow_process_form" model="ir.actions.act_window">
+            <field name="name">Automatic Workflow</field>
+            <field name="res_model">magento.sale.workflow.process</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem groups="group_magento_user_ept" action="act_sale_workflow_process_form" id="menu_act_sale_workflow_process_form" parent="menu_magento_root" sequence="60"/>
+
+    </data>
+</odoo>

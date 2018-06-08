@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="payment_method_view_form" model="ir.ui.view">
+            <field name="name">payment_method.view_form</field>
+            <field name="model">magento.payment.method.ept</field>
+            <field name="arch" type="xml">
+                <form string="Payment Methods">
+                	<sheet>
+	                    <h1>
+	                        <field name="payment_method_code_id" required="1" options="{'no_create':True}"/>
+	                    </h1>
+	                    <group name="general">
+	                        <group name="config">
+	                            <field name="company_id" string="Company" />
+	                            <field name="journal_id" required="1" domain="[('type','in',['cash','bank'])]"/>
+	                            <field name="invoice_journal_id" domain="[('type','in',['sale'])]" required="1"/>
+	                            <field name="magento_workflow_process_id" />
+	                        </group>
+	                         <group>
+	                            <field name="import_rule" />
+	                            <field name="days_before_cancel" />
+	                        </group>
+	                    </group>
+	                    <group name="magento">
+	                    	<group>
+	            				<field name="website_id" required="1" options="{'no_create':True}"/>
+	            				<field name="create_invoice_on" string="Create invoice on"/>
+	            			</group>
+	            			<group>
+	            				<field name="payment_term_id" />
+	            				<field name="register_payment" invisible="1" />
+	            			</group>
+	          			</group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="payment_method_view_tree" model="ir.ui.view">
+            <field name="name">payment_method.view_tree</field>
+            <field name="model">magento.payment.method.ept</field>
+            <field name="arch" type="xml">
+                <tree string="Payment Methods">
+                    <field name="payment_method_code_id" />
+                    <field name="website_id" />
+                    <field name="journal_id" />
+                    <field name="magento_workflow_process_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="act_payment_method_form" model="ir.actions.act_window">
+            <field name="name">Payment Methods </field>
+            <field name="res_model">magento.payment.method.ept</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="action_create_payment_method_form_view" model="ir.actions.act_window">
+            <field name="name">Payment Methods </field>
+            <field name="res_model">magento.payment.method.ept</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="payment_method_view_form"/>
+        </record>
+
+        <menuitem action="act_payment_method_form" id="menu_action_paymetn_method_form" parent="menu_magento_root" sequence="55"/>
+
+    </data>
+</odoo>

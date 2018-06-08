@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+     	<record id="view_magento_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner">
+                   <field name="name"
+                       filter_domain="['|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self)]"/>
+                   <filter name="filter_my_partners" help="My Partners"
+                           domain="[('user_id','=',uid)]"/>
+                   <separator/>
+                   <filter string="Persons" name="type_person" domain="[('is_company','=',0)]"/>
+                   <filter string="Companies" name="type_company" domain="[('is_company','=',1)]"/>
+                   <separator/>
+                   <filter string="Customers" name="customer" domain="[('customer','=',1), ('parent_id', '=', False)]"/>
+                   <filter string="Vendors" name="supplier" domain="[('supplier','=',1), ('parent_id', '=', False)]"/>
+                   <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                   <separator/>
+                   <field name="category_id" string="Tag" filter_domain="[('category_id','ilike', self)]"/>
+                   <field name="user_id"/>
+                   <field name="parent_id" domain="[('is_company','=',1)]" operator="child_of"/>
+                   <group expand="0" name="group_by" string="Group By">
+                       <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}" />
+                       <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>
+                       <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                       <filter name="group_instance" string="Instance" context="{'group_by' : 'backend_id'}"/>
+                       <filter name="group_website" string="Website" context="{'group_by' : 'website_id'}"/>
+                   </group>
+               </search>
+            </field>
+        </record>
+    
+    
+         <!-- dashboard -->
+		<record id="action_magento_partner_form" model="ir.actions.act_window">
+			<field name="name">Customers</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="context">{"search_default_customer":1}</field>
+			<field name="domain">[('backend_id','!=',False)]</field>
+			<field name="search_view_id" ref="view_magento_res_partner_filter" />
+		</record>
+		<menuitem id="menu_item_magento_customers" name="Customers"
+			parent="odoo_magento2_ept.magento_menu_item_sales" sequence="1"
+			action="action_magento_partner_form" />
+			
+    </data>
+</odoo>

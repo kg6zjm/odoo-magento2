@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_magento_backend_form" model="ir.ui.view">
+            <field name="name">magento.backend.form</field>
+            <field name="model">magento.backend</field>
+            <field name="arch" type="xml">
+                <form string="Magento Instance" create="false">
+                    <header>
+                      <button name="synchronize_metadata"
+                        type="object"
+                        class="oe_highlight"
+                        string="Synchronize Metadata" groups="odoo_magento2_ept.group_connector_manager"/>
+                        <button name="test_connection" type="object" string="Test connection"></button>                        		
+                    </header>
+                    <sheet>
+                    	<div class="oe_button_box" name="button_box">
+                    		<field name="website_ids" invisible="1"></field>
+							<button name="open_all_websites" type="object" string="Websites" icon="fa-sitemap" class="oe_stat_button"></button>
+						</div>
+                    	<field name="id" invisible="1"/>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_inline" />
+                        </h1>
+                        
+                        <group>  
+	                        <group colspan="4">
+	                        	 <field name="location" placeholder="e.g. http://my.magento.com"/>
+	                        </group>
+                        	<group colspan="2">                    
+	                             <group>
+	                                 <field name="version"/>
+									 <field name="token" required="1"/>
+									 <field name="pricelist_id" required="1"/>
+	                             </group>
+	                             <group>
+	                             	 <field name="warehouse_ids" widget="many2many_tags" options="{'no_create': True}"/>
+	 								 <field name="catalog_price_scope" required="1"/>
+	                             </group>
+                             </group>
+                        </group>
+             
+                        <notebook>
+                            <page name="advanced_configuration" string="Other Configuration">
+	                            <group colspan="2">
+	                            	<field name="attribute_set_tpl_id"/>
+                               		<field name="default_category_id" widget="selection" domain="[('backend_id','=',id)]"/>
+                               		<field name="image_delete_on_magento"/>
+                               		<field name="is_only_import_export_basic_info" invisible="1"/>
+                               	</group>
+                               	<group invisible="1">
+                               		<lable for="allow_import_traslation" invisible="1"/>
+                                	<field name="allow_import_traslation" nolable="1" invisible="1"/>
+                                	<field name="allow_import_image_of_products" invisible="1"/>
+                                	<field name="product_import_page_size" invisible="1"/>
+                                	<field name="product_stock_field_id" widget="selection" invisible="1"
+                                       		domain="[('model', 'in', ['product.product', 'product.template']), ('ttype', '=', 'float')]"/>
+                                       <field name="allow_so_import_on_fly" invisible="1"/>
+                                       <field name="default_lang_id" widget="selection" invisible="1"/>
+                                       
+									<field name="customer_import_page_size" invisible="1"/>
+									<field name="is_import_product_stock"/>
+									<field name="import_stock_warehouse"/>
+									<field name="auto_create_product" invisible="1"/>
+                               	</group>
+                            </page>
+							<page name="other_info" string="Other Info">
+							<group>
+								<group cols="2">
+									<lable for="last_partner_import_date" class="oe_inline"/>
+									<field name="last_partner_import_date" nolable="1"></field>
+									<field name="last_order_import_date"/>
+									<field name="last_order_status_update_date"/>
+									<field name="last_product_import_date"/>
+									
+								</group>
+								<group cols="2">
+									<lable for="last_product_category_import_date" class="oe_inline"></lable>
+									<field name="last_product_category_import_date"/>
+									<field name="last_attribute_set_import_date"/>
+									<field name="last_attribute_import_date"/>
+ 									<field name="last_update_stock_time" class="oe_inline" />
+							</group>
+							</group>
+							</page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_magento_backend_tree" model="ir.ui.view">
+            <field name="name">magento.backend.tree</field>
+            <field name="model">magento.backend</field>
+            <field name="arch" type="xml">
+                <tree string="Magento Instance" create='false'>
+                    <field name="name"/>
+                    <field name="location"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_magento_backend" model="ir.actions.act_window">
+            <field name="name">Magento Instances</field>
+            <field name="res_model">magento.backend</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_magento_backend_tree"/>
+        </record>
+
+
+        <record id="view_magento_website_form" model="ir.ui.view">
+            <field name="name">magento.website.form</field>
+            <field name="model">magento.website</field>
+            <field name="arch" type="xml">
+                <form string="Magento Website" create="false"
+                        delete="false">
+                    <sheet>
+                    	<div class="oe_button_box" name="button_box">
+                    		<field name="store_ids" invisible="1"></field>
+							<button name="open_all_stores" type="object" string="Stores" icon="fa-sitemap" class="oe_stat_button"></button>
+							<field name="payment_method_ids" invisible="1"></field>
+							<button name="open_payment_methods" type="object" string="Payment Methods" icon="fa-sitemap" class="oe_stat_button"></button>
+						</div>
+                        <h1>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                        <group>
+                        	<group>
+	                       		<field name="magento_id" invisible="1"/>
+	                           	<field name="backend_id" readonly="1"/>
+	                           	<field name="code"/>
+								<field name="warehouse_id"></field>
+	                 			<field name="company_id" invisible="1"/>
+	                 			<field name="pricelist_id" required="1"/>
+	                            <field name="currency_id" readonly="1" invisible="1"/>
+                            </group>
+                            <group name="tax">
+                       			<field name="tax_include_in_price"/>
+                          		<field name="create_tax_if_not_found"/>
+                      			<field name="tax_account_id" attrs="{'required':[('create_tax_if_not_found','=',True)],'invisible':[('create_tax_if_not_found','=',False)]}"/>
+							<field name="tax_account_refund_id" attrs="{'required':[('create_tax_if_not_found','=',True)],'invisible':[('create_tax_if_not_found','=',False)]}"/>
+							</group>
+                        </group>
+                        <group invisible="1">
+                        	<field name="import_partners_from_date"/>
+                        </group>
+                        <notebook invisible="1">
+                            <page name="store" string="Stores">
+                                <group>
+                                    <field name="store_ids" nolabel="1"/>
+                                </group>
+                            </page>
+							<page name="payment_method" string="Payment Methods">
+								<group>
+									<field name="payment_method_ids" nolabel="1">
+										<tree>
+											<field name="payment_method_code_id"/>
+											<field name="journal_id"/>
+											<field name="invoice_journal_id"/>
+											<field name="create_invoice_on" string="Create invoice on"/>
+										</tree>
+									</field>
+								</group>
+							</page>
+							<page name="other_info" string="Other Info">
+								<group cols="2">
+									<lable for="import_partners_from_date"/>
+									<field name="import_partners_from_date" nolable="1"/>
+								</group>
+							</page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_magento_website_tree" model="ir.ui.view">
+            <field name="name">magento.website.tree</field>
+            <field name="model">magento.website</field>
+            <field name="arch" type="xml">
+                <tree string="Magento Website" create="false"
+                        delete="false">
+                    <field name="name"/>
+                    <field name="backend_id"/>
+                    <field name="code"/>
+                    <field name="pricelist_id"/>
+                    <field name="sort_order"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_magento_website" model="ir.actions.act_window">
+            <field name="name">Magento Websites</field>
+            <field name="res_model">magento.website</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_magento_website_tree"/>
+        </record>
+
+
+        <record id="view_magento_store_form" model="ir.ui.view">
+            <field name="name">magento.store.form</field>
+            <field name="model">magento.store</field>
+            <field name="arch" type="xml">
+                <form string="Magento Store" create="false"
+                        delete="false">
+                    <sheet>
+                    	<div class="oe_button_box" name="button_box">
+                    		<field name="storeview_ids" invisible="1"></field>
+							<button name="open_magento_storeviews" type="object" string="Storeviews" icon="fa-sitemap" class="oe_stat_button"></button>
+						</div>
+                        <h1>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                        <group>
+                            <field name="website_id"/>
+                        </group>
+                        <group><h3>Send Email From Magento</h3>
+                       		<group colspan="4"> 
+	                            <field name="send_picking_done_mail" string="Shipment"/>
+	                            <field name="send_invoice_paid_mail" string="Invoice"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_magento_store_tree" model="ir.ui.view">
+            <field name="name">magento.store.tree</field>
+            <field name="model">magento.store</field>
+            <field name="arch" type="xml">
+                <tree string="Magento Store" create="false"
+                        delete="false">
+                    <field name="name"/>
+                    <field name="website_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_magento_store" model="ir.actions.act_window">
+            <field name="name">Magento Stores</field>
+            <field name="res_model">magento.store</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_magento_store_tree"/>
+        </record>
+
+
+        <record id="view_magento_storeview_form" model="ir.ui.view">
+            <field name="name">magento.storeview.form</field>
+            <field name="model">magento.storeview</field>
+            <field name="arch" type="xml">
+                <form string="Magento Storeview" create="false"
+                        delete="false">
+                    <sheet>
+                        <h1>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                        <group>
+                            <field name="code"/>
+                            <field name="store_id"/>
+                            <field name="website_id"/>
+                            <field name="sort_order" invisible="1"/>
+                            <field name="no_sales_order_sync"/>
+                            <field name="base_media_url"/>
+                            <field name="team_id" options="{'no_create': True}" groups="base.group_multi_salesteams"/>
+                            <field name="lang_id"/>
+                            <field name="sale_prefix"/>
+                        </group>
+                        <notebook invisible="1">
+                            <page name="import" string="Imports">
+                                <group colspan="4">
+                                  <div>
+                                    <label string="Import Sale Orders since"
+                                           class="oe_inline"/>
+                                    <field name='import_orders_from_date'
+                                           class="oe_inline"
+                                           nolabel="1"/>
+                                  </div>
+                                </group>
+                            </page>
+
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_magento_storeview_tree" model="ir.ui.view">
+            <field name="name">magento.storeview.tree</field>
+            <field name="model">magento.storeview</field>
+            <field name="arch" type="xml">
+                <tree string="Magento Storeview" create="false"
+                        delete="false">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="no_sales_order_sync" invisible="1"/>
+                    <field name="sort_order" invisible="1"/>
+                    <field name="store_id"/>
+                    <field name="website_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_magento_storeview" model="ir.actions.act_window">
+            <field name="name">Magento Storeviews</field>
+            <field name="res_model">magento.storeview</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_magento_storeview_tree"/>
+        </record>
+        
+        <record id="magento_dashboard_kanban_view" model="ir.ui.view">
+			<field name="name">Magento Dashboard</field>
+			<field name="model">magento.website</field>
+			<field name="arch" type="xml">
+			<kanban class="oe_background_grey o_kanban_dashboard o_emphasize_colors" create="false">
+					<field name="name"/>
+					<field name="backend_id"/>
+					<field name="color"/>
+					<field name="name"/>
+					<templates>
+						<t t-name="kanban-box" >
+	                        <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+	                         
+	                            <div class="o_kanban_card_header">
+	                                <div class="o_kanban_card_header_title">
+	                                  	<a class="o_primary">
+	                                   		<strong><span style="color:gray"><field name="name"/></span></strong>
+	                                   	</a>
+	                                   <div class="o_secondary"><a name="get_magento_backend" type="object"><field name="backend_id" class="o_secondary"/></a></div>
+	                                </div>
+	                                <div class="o_kanban_manage_button_section" groups="odoo_magento2_ept.group_connector_manager">
+	                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+	                                </div>
+	                            </div>
+	                            <div class="container o_kanban_card_content">
+	                           		<div class="row">
+                                       	<div class="col-xs-6 o_kanban_primary_left">
+	                                    	<button class="btn btn-primary" name="get_all_operation_wizard" type="object">
+	                                            <span>Perform Operation</span>
+	                                        </button>
+	                                     </div>
+	                            	
+	                            	<div class="col-xs-6 o_kanban_primary_right">
+		                                    <div class="col-xs-9">
+		                                        <div class="mb8">
+		                                            <a name="get_magento_stores" type="object"><span>Stores</span></a>
+		                                        </div>
+		                                        <div class="mb8">
+		                                            <a name="get_magento_storeviews" type="object"><span>Storeview</span></a>
+		                                        </div>
+		                                </div>
+	                            	</div>
+	                            </div>
+	                            <div class="container o_kanban_card_manage_pane o_invisible">
+	                               <div class="row">
+		                                <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view" name="magento_left_manage_order_pane">
+		                                    <div class="o_kanban_card_manage_title">
+		                                        <span style="font-weight:bold;color:gray">Orders</span>
+		                                    </div>
+		                                    <div>
+		                                        <a name="get_magento_pending_orders" type="object"><field name="count_quotations"/>  Pending Orders</a>
+		                                    </div>
+		                                    <div>
+		                                        <a name="get_magento_sales_orders" type="object"><field name="count_orders"/>  Sales Orders</a>
+		                                    </div>
+		                                </div>
+		                                <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view" name="magento_left_shipment_manage_pane">
+		                                    <div class="o_kanban_card_manage_title">
+		                                        <span style="font-weight:bold;color:gray">Shipment</span>
+		                                    </div>
+		                                    <div>
+		                                        <a name="get_magento_waiting_shipments" type="object"><field name="count_picking_confirmed"/>  Waiting</a>
+		                                    </div>
+		                                    <div>
+		                                       <a name="get_magento_ready_shipments" type="object"><field name="count_picking_assigned"/>  Ready </a>
+		                                    </div>
+		                                    <div>
+		                                    	<a name="get_magento_transfered_shipments" type="object"><field name="count_picking_done"/>  Transferred</a>
+		                                    </div>
+		                                </div>
+                            	  </div>
+                            	  <div class="row">
+                            	  	<div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view" name="magento_left_invoice_manage_pane">
+	                            	  	<div class="o_kanban_card_manage_title">
+			                                <span style="font-weight:bold;color:gray">Invoice</span>
+										</div>
+										<div>
+											<a name="get_magento_open_invoices" type="object"><field name="count_open_invoices"/>  Open</a>
+	                                   	</div>
+	                                    <div>
+	                                    	<a name="get_magento_paid_invoices" type="object"><field name="count_paid_invoices"/>  Paid</a>
+	                                    </div>
+	                                 </div>
+	                                 <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view" name="magento_right_other_manage_pane">
+	                            	  	<div class="o_kanban_card_manage_title">
+			                                <span style="font-weight:bold;color:gray">Others</span>
+										</div>
+										<div>
+											<a name="get_magento_customers" type="object">Customers</a>
+	                                   	</div>
+	                                    <div>
+	                                     <a name="get_magento_products" type="object">Products</a>
+	                                    </div>
+	                                 </div>
+                            	  </div>
+	                                <div t-if="widget.editable" class="o_kanban_card_manage_settings row">
+	                                    <div class="col-xs-8 ">
+	                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+                         </div>
+	                    </t>		
+					</templates>
+				</kanban>
+			</field>
+		</record>
+        <record id="action_magento_website_dashboard" model="ir.actions.act_window">
+            <field name="name">Magento Websites</field>
+            <field name="res_model">magento.website</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="magento_dashboard_kanban_view"/>
+            <field name="help" type="html">
+				<div>
+					<br />
+					<br />
+					<br />
+					<p>
+						<b>There is no any Magento Instance configured yet.</b>
+					</p>
+					<p>
+						To add your first Magento Instance, go to menu
+						<i>Magento >> Configuration >> Settings</i>
+						and create new Instance from there.
+						At there you can define one or
+						more Magento Instances and
+						configure extended options per
+						Instance.
+					</p>
+				</div>
+			</field>
+        </record>
+        
+    </data>
+</odoo>

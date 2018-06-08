@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>  
+        <template id="assets_backend" name="odoo_magento2_ept assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/odoo_magento2_ept/static/src/css/base.css"/>
+                <script type="text/javascript" src="/odoo_magento2_ept/static/src/js/tour.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

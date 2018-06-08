@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequences for Dashboard -->
+        <record id="sequence_magento_dashboard_operation_backend" model="ir.sequence">
+            <field name="name">Magento Dashboard Operation sequence</field>
+            <field name="code">magento.dashboard.seq</field>
+            <field name="prefix"></field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

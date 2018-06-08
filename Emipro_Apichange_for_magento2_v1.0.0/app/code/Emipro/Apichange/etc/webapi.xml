@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../app/code/Magento/Webapi/etc/webapi.xsd">
+
+    <!-- Example: curl http://127.0.0.1/index.php/rest/V1/calculator/add/1/2 -->
+    <route url="/V1/attribute" method="POST">
+        <service class="Emipro\Apichange\Api\AttributeInterface" method="attribute"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+
+     <route url="/V1/paymentmethod" method="GET">
+        <service class="Emipro\Apichange\Api\PaymentInterface" method="payment"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+
+    <route url="/V1/shippingmethod" method="GET">
+        <service class="Emipro\Apichange\Api\ShippingInterface" method="shipping"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+
+    <route url="/V1/storeview" method="GET">
+        <service class="Emipro\Apichange\Api\StoreviewInterface" method="getLists"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+
+    <route url="/V1/product/updatestock" method="PUT">
+        <service class="Emipro\Apichange\Api\StockInterface" method="update"/>
+        <resources>
+            <resource ref="admin"/>
+        </resources>
+    </route>
+
+</routes>
+    

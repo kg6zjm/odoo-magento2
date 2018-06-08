@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_queue_job_pending_ept" model="ir.actions.act_window">
+            <field name="name">Pending Jobs</field>
+            <field name="res_model">queue.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','pending')]</field>
+            <field name="view_id" ref="view_queue_job_tree_view"/>
+            <field name="search_view_id" ref="view_queue_job_search"/>
+        </record>
+		
+		<record id="action_queue_job_enqueued_ept" model="ir.actions.act_window">
+            <field name="name">Enqueued Jobs</field>
+            <field name="res_model">queue.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','enqueued')]</field>
+            <field name="view_id" ref="view_queue_job_tree_view"/>
+            <field name="search_view_id" ref="view_queue_job_search"/>
+        </record>
+        
+        <record id="action_queue_job_started_ept" model="ir.actions.act_window">
+            <field name="name">Started Jobs</field>
+            <field name="res_model">queue.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','started')]</field>
+            <field name="view_id" ref="view_queue_job_tree_view"/>
+            <field name="search_view_id" ref="view_queue_job_search"/>
+        </record>
+        
+        <record id="action_queue_job_failed_ept" model="ir.actions.act_window">
+            <field name="name">Failed Jobs</field>
+            <field name="res_model">queue.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','failed')]</field>
+            <field name="view_id" ref="view_queue_job_tree_view"/>
+            <field name="search_view_id" ref="view_queue_job_search"/>
+        </record>
+        
+        <record id="action_queue_job_done_ept" model="ir.actions.act_window">
+            <field name="name">Done Jobs</field>
+            <field name="res_model">queue.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','done')]</field>
+            <field name="view_id" ref="view_queue_job_tree_view"/>
+            <field name="search_view_id" ref="view_queue_job_search"/>
+        </record>
+        
+    </data>
+</odoo>

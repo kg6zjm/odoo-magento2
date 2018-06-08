@@ -1,0 +1,308 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+    	
+        <record id="view_order_form" model="ir.ui.view">
+            <field name="name">odoo_magento2_ept.view_order_form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//header/button[1]" position="before">
+            		<field name="parent_id" invisible="1"/>
+            		<button name="action_view_parent"
+            	         	string="View Parent Sales Order"
+                	        type="object" class="oe_highlight"
+                    	    attrs="{'invisible': [('parent_id', '=', False)]}"
+                        	groups="base.group_user"/>
+                    <button name="cancel_order_on_magento" string="Cancel Order On Magento"
+                    	type="object" attrs="{'invisible':[('magento_bind_ids','=',False),('state','not in',['cancel'])] }"
+                    />
+            	</xpath>
+            	<xpath expr="//notebook[last()]" position="inside">
+      	 			<page name="automation_information" string="Magento Information" groups="base.group_no_one">
+            			<group>
+            				<field name="magento_bind_ids" invisible="1"/>
+            				<field name="payment_method_id"/>	
+              				<field name="magento_workflow_process_id"/>
+              				<field name="canceled_in_backend"/>
+              				<field name="cancellation_resolved" invisible="1"/>
+              				<field name="magento_order_reference"/>
+            			</group>
+          			</page>
+      			</xpath>
+      			<xpath expr="//field[@name='payment_term_id']" position="after">
+      				<field name="magento_order_status" attrs="{'invisible':[('magento_bind_ids','=',[])]}"/>
+      			</xpath>
+      			<button name="action_done" position="after">
+      				<button name="get_magento_order_status" type="object" string="Get Magento Status" attrs="{'invisible':[('magento_bind_ids','=',[])]}"/>
+      			</button>
+            </field>
+        </record>       
+
+        <record id="sale_order_view_tree" model="ir.ui.view">
+            <field name="name">sale.order.view.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree" />
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="payment_method_id" />
+                </field>
+            </field>
+        </record>
+
+        <record id="view_quotation_tree" model="ir.ui.view">
+            <field name="name">sale.order.view.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree" />
+            <field name="arch" type="xml">
+                <field name="amount_total" position="after">
+                    <field name="amount_paid"/>
+                    <field name="payment_method_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_sales_order_filter" model="ir.ui.view">
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <filter name="my_sale_orders_filter" position="after">
+                   <!--  <filter string="Canceled in backend, to cancel"
+                        domain="[('canceled_in_backend', '=', True),
+                                 ('cancellation_resolved', '=', False),
+                                 ('state', '!=', 'cancel')]"
+                        help="Only sales orders canceled in their backend"
+                        name="canceled_in_backend_filter"/> -->
+                 </filter>
+                 <xpath expr="//group[1]" position="inside">
+                 	<filter name="filter_sale_order_search_magento_website" string="Website" context="{'group_by':'website_id'}"/>
+                 	<filter name="filter_sale_order_search_magento_store" string="Store" context="{'group_by':'store_id'}"/>
+                 	<filter name="filter_sale_order_search_magento_storeview" string="Storeview" context="{'group_by':'storeview_id'}"/>
+                 </xpath>
+                 <field name="product_id" position="after">
+                 	<field name="website_id"/>
+                 	<field name="store_id"/>
+                 	<field name="storeview_id"/>
+                 	
+                 </field>
+            </field>
+        </record>
+        
+        <record id="sale_order_tree_view_ept" model="ir.ui.view">
+        	<field name="name">sale.order.tree.view.ept</field>
+        	<field name="model">sale.order</field>
+        	<field name="arch" type="xml">	
+        		<tree string="Sales Orders" fonts="bold:message_unread==True" colors="grey:state=='cancel';blue:state in ('waiting_date','manual');red:state in ('invoice_except','shipping_except')" create="false">
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" string="Order Number"/>
+                    <field name="date_order"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="amount_total" sum="Total Tax Included"/>
+                    <field name="payment_method_id" />
+                    <field name="storeview_id"/>
+                    <field name="state"/>
+                </tree>
+        	</field>
+        </record>
+        
+        <record id="sale_order_filter_view_ept" model="ir.ui.view">
+            <field name="name">sale.order.filter.view.ept</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <field name="name" string="Sales Order" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="user_id"/>
+                    <field name="team_id" string="Sales Team" groups="base.group_multi_salesteams"/>
+                    <field name="product_id"/>
+                    <field name="website_id"/>
+                    <field name="store_id"/>
+                    <field name="storeview_id"/>
+                    <separator/>
+                    <filter string="My" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
+                    <!-- <filter string="Canceled in backend, to cancel"
+                        domain="[('canceled_in_backend', '=', True),
+                                 ('cancellation_resolved', '=', False),
+                                 ('state', '!=', 'cancel')]"
+                        help="Only sales orders canceled in their backend"
+                        name="canceled_in_backend_filter"/> -->
+                    <separator/>
+                    <filter string="Quotations" name="draft" domain="[('state','in',('draft','sent'))]" help="Sales Order that haven't yet been confirmed"/>
+                    <filter string="Sales" name="sales" domain="[('state','in',('manual','progress'))]"/>
+                    <filter string="To Invoice" domain="[('state','=','manual')]" help="Sales Order ready to be invoiced"/>
+                    <filter string="Done" domain="[('state','=','done')]" help="Sales Order done"/>
+                    <separator/>
+                    <filter string="New Mail" name="message_unread" domain="[('message_unread','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Salesperson" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Order Month" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter string="Website" context="{'group_by':'website_id'}"/>
+                 		<filter string="Store" context="{'group_by':'store_id'}"/>
+                 		<filter string="Storeview" context="{'group_by':'storeview_id'}"/>
+                 		<filter string="Payment Method" context="{'group_by':'payment_method_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        
+        <!-- dashboard -->
+        <record id="magento_action_sales_order_ept" model="ir.actions.act_window">
+            <field name="name">Sales Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sale_order_tree_view_ept"/>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="domain">[('magento_bind_ids','!=',False)]</field>
+            <field name="search_view_id" ref="sale_order_filter_view_ept"/>
+            <field name="help" type="html">
+            <div>
+					<br />
+					<br />
+					<br />
+					<p>
+						<b>There is no any Sale Order synchronised from any of your Magento
+							Instance yet.</b>
+					</p>
+					<p>
+						You can't create Sale Order manually and push it to Magento. Through
+						only import Sale Order from
+						any of your Magento Instance, you can see your Orders here.Import Sale
+						Order can be performed by 2 ways.
+					</p>
+					<p>
+						<b>1.</b>
+						Via automatic jobs to import Sale Orders at frequent amount of
+						time.
+						<br />
+						Go to menu Configuration >> Setting and select Magento Instance,
+						Activate cron job of Sale Order Import.
+						However from Magento settings you can set your preferred timings for auto
+						import Sale Order from Magento.
+					</p>
+					<p>
+						<b>2.</b>
+						Manually Import Orders at any time
+						<br />
+						Go to menu Magento >> Operation >> All Operations and select your
+						instances and option "Import Sale Order".
+						Clicking on "Execute" button will import all
+						orders from Magento to ERP.
+					</p>
+					<p>
+						<b>3.</b>
+						At the time of import order,you must configure workflow order
+						status.
+						<br />
+						Go to Magento >> Configuration >> Auto Sale Workflow Configuration
+					</p>
+				</div>
+            </field>
+        </record>    
+		<record id="magento_action_quotations_ept" model="ir.actions.act_window">
+            <field name="name">Pending Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="domain">[('state','in',('draft','sent','cancel')),('magento_bind_ids','!=',False)]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a quotation, the first step of a new sale.
+              </p><p>
+                Odoo will help you handle efficiently the complete sale flow:
+                from the quotation to the sales order, the
+                delivery, the invoicing and the payment collection.
+              </p><p>
+                The social feature helps you organize discussions on each sales
+                order, and allow your customers to keep track of the evolution
+                of the sales order.
+              </p>
+            </field>
+        </record>
+        
+        <record id="magento_action_sale_orders_ept" model="ir.actions.act_window">
+            <field name="name">Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')),('magento_bind_ids','!=',False)]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a quotation that can be converted into a sales
+                    order.
+                </p><p>
+                    Odoo will help you efficiently handle the complete sales flow:
+                    quotation, sales order, delivery, invoicing and payment.
+                </p>
+            </field>
+        </record>
+        
+        <record id="magento_action_canceled_in_magento_orders_ept" model="ir.actions.act_window">
+            <field name="name">Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="domain">[('canceled_in_backend', '=', True),('magento_bind_ids','!=',False)]</field>
+        </record>
+        
+        <record id="view_magento_sale_order_form" model="ir.ui.view">
+            <field name="name">magento.sale.order.form</field>
+            <field name="model">magento.sale.order</field>
+            <field name="arch" type="xml">
+                <form string="Magento Sale order"
+                        create="false" delete="false">
+                    <sheet>
+	                     <h1>
+	                     	<field name="name" class="oe_inline" readonly="1"/>
+	                     </h1>
+	                     <group>
+	                     	<field name="backend_id" readonly="1"/>
+	                     	<field name="magento_order_id"  readonly="1" />
+	                     	<field name="storeview_id"  readonly="1"/>
+	                     	<field name="magento_parent_id"  readonly="1"/>
+	                     </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_magento_sale_order_tree" model="ir.ui.view">
+        	<field name="name">magento.sale.order.tree.view</field>
+        	<field name="model">magento.sale.order</field>
+        	<field name="arch" type="xml">
+        		<tree create="false" delete="false" string="Orders">
+        			<field name="backend_id" string="Instance"/>
+        			<field name="magento_order_id"/>
+        			<field name="storeview_id"/>
+        			<field name="magento_parent_id"/>
+        		</tree>
+        	</field>
+        </record>
+        
+        <record id="action_magento_sale_order" model="ir.actions.act_window">
+        	<field name="name">Magento Sale Orders</field>
+        	<field name="type">ir.actions.act_window</field>
+        	<field name="res_model">magento.sale.order</field>
+        	<field name="view_mode">tree,form</field>
+        </record>
+        
+     <menuitem id="magento_menu_item_sales" name="Customer &amp; Sales"
+      parent="menu_connector_root" sequence="5" groups="group_magento_user_ept"/>
+
+
+     <menuitem id="magento_menu_item_sales_order" name="Orders"
+      parent="odoo_magento2_ept.magento_menu_item_sales" 
+      action="magento_action_sales_order_ept"
+      sequence="10"/>
+        
+    </data>
+</odoo>
